@@ -1,6 +1,9 @@
-import React from "react"
+import React, { useId } from "react"
 
 export const BrandLogo = ({ className }: { className?: string }) => {
+    const id = useId();
+    const gradientId = `goldGradient-${id.replace(/:/g, '')}`;
+
     return (
         <svg
             viewBox="-30 0 360 160" // Adjusted viewBox to prevent text clipping
@@ -9,7 +12,7 @@ export const BrandLogo = ({ className }: { className?: string }) => {
             className={className}
         >
             <defs>
-                <linearGradient id="goldGradient" x1="0%" y1="0%" x2="100%" y2="0%">
+                <linearGradient id={gradientId} x1="0%" y1="0%" x2="100%" y2="0%">
                     <stop offset="0%" stopColor="#F59E0B" />
                     <stop offset="100%" stopColor="#D97706" />
                 </linearGradient>
@@ -52,7 +55,7 @@ export const BrandLogo = ({ className }: { className?: string }) => {
             {/* Top Orange Swoosh */}
             <path
                 d="M30 85 H 90 Q 110 85, 120 70 Q 150 25, 200 45"
-                stroke="url(#goldGradient)"
+                stroke={`url(#${gradientId})`}
                 strokeWidth="6"
                 strokeLinecap="round"
                 fill="none"
@@ -61,7 +64,7 @@ export const BrandLogo = ({ className }: { className?: string }) => {
             {/* Bottom Orange Swoosh */}
             <path
                 d="M270 95 H 210 Q 190 95, 180 110 Q 150 155, 100 135"
-                stroke="url(#goldGradient)"
+                stroke={`url(#${gradientId})`}
                 strokeWidth="6"
                 strokeLinecap="round"
                 fill="none"

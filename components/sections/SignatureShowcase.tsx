@@ -33,6 +33,8 @@ export function SignatureShowcase() {
     const textOpacity = useTransform(smoothProgress, [0.4, 0.5, 0.6], [0, 1, 0])
     const textScale = useTransform(smoothProgress, [0.4, 0.5, 0.6], [0.8, 1, 1.2])
 
+    const lineOpacity = useTransform(smoothProgress, [0.3, 0.4], [0, 0.5])
+
     return (
         <section ref={containerRef} className="relative h-[300vh] bg-slate-950 overflow-clip transform-gpu">
             <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
@@ -49,7 +51,7 @@ export function SignatureShowcase() {
                         scale,
                         opacity,
                         rotateX,
-                        perspective: 1000
+                        perspective: "1000px"
                     }}
                     className="relative flex items-center justify-center"
                 >
@@ -89,17 +91,17 @@ export function SignatureShowcase() {
                     {/* Laser Connections (Lines) */}
                     <svg className="absolute inset-0 w-[500px] h-[500px] -translate-x-1/2 -translate-y-1/2 pointer-events-none">
                         <motion.line
-                            style={{ opacity: useTransform(smoothProgress, [0.3, 0.4], [0, 0.5]) }}
+                            style={{ opacity: lineOpacity }}
                             x1="250" y1="250" x2="100" y2="150"
                             stroke="rgba(217, 119, 6, 0.5)" strokeWidth="1" strokeDasharray="4 4"
                         />
                         <motion.line
-                            style={{ opacity: useTransform(smoothProgress, [0.3, 0.4], [0, 0.5]) }}
+                            style={{ opacity: lineOpacity }}
                             x1="250" y1="250" x2="400" y2="150"
                             stroke="rgba(217, 119, 6, 0.5)" strokeWidth="1" strokeDasharray="4 4"
                         />
                         <motion.line
-                            style={{ opacity: useTransform(smoothProgress, [0.3, 0.4], [0, 0.5]) }}
+                            style={{ opacity: lineOpacity }}
                             x1="250" y1="250" x2="250" y2="400"
                             stroke="rgba(217, 119, 6, 0.5)" strokeWidth="1" strokeDasharray="4 4"
                         />

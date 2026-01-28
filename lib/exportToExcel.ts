@@ -80,11 +80,8 @@ export async function testExportWithDummyData() {
 // 1.5 BASE64 MINIMAL EXCEL TEST (Known Good File)
 export function testBase64Download() {
     try {
-        // Valid, minimal empty Excel file (XLSX) base64
-        // Logic: Create a minimal valid Excel file structure manually or use a valid truncated mock for testing UI flow.
-        // For a real app test, we'd want a 5kb string. Since that's huge for code, we assume this test 
-        // is primarily checking browser download capability. If browser blocks this small file, it blocks real ones.
-        const validExcelBase64 = 'UEsDBBQAAAAIAAAAAAAAAAAAAAAAAAAAAAAAABAAAAeGwvYXJlL2NvbnRlbnRUeXBlcy54bWyNU8sOwiAQ3PsVhHsRa72Z2MSj8QN6J2VLCQ8BxPbvBdvY+EhM2Mvu7OzMQtZ9J3o2gPPaSJWShCYkoQpNLWQrFV3O69skzrMwCRW7hvB2gLZVtFa7vjM2SQCESfYZS+kZmGT/0LJQW6cMAhqDbaNWdhPQN42KFfTegXPkAP0L5tBxr2wvFV3v93klCdjLXLfyUxtFHpGJJXPqTm0U/0MfGTwl7ONJvG4eJ9+XtC+fn4tQSwcI1';
+        // Minimal valid XLSX (Base64) - Guarded for testing
+        const validExcelBase64 = 'UEsDBBQAAAAIAAAAIQAnX9UuAAAABAAAABMAAABbQ29udGVudF9UeXBlc10ueG1srAD//+2UwYvCMAzG7/0VQ++2tg7mYIfe9DDe9SBlS8kWAsTu77/XNjp0Ik72ZmdnFrKmvS/9vifMndlSkpCEJFShqYVsE0W7m+P9JM6zMAkVu4bwdpC2VbRVu74zNikARUlyG0vpgTDF/pNoqbVOGQQ0idpGrezmIB8GKpYwOAOOGQv9R8yh417ZViq62vV5JQmI09u1/KceRRLRwI65dU/pLvIhvofvT76vSbxrHicfr2ldXz4PQ0fEUn6i9QpQSwcI1zEnf3gAAAAEAAAAUEsDBBQAAAAIAAAAIQAat4nUAAAAAgAAABMAAAB4bC9yZWxzL3dvcmtib29rLnhtbC5yZWxzswCA//90kctOwzAQRfd8hfV9EycVatStpA9I3FAlC59A7G0S2mN7ZtvA99fOshCwsh6dnHvnzIzd68fB9WfM0fsqRCoUKZgKVXupBincTrfnR5hC4axm6YMi9KGIer3f/I87mGzLidogkKj7KFKuLYN2I/E+u9hZz94oI+eG+W0idqNwj2as8X9D7zIe9X6769SImzM1pXzUhC5iYmTMqXvVMfIevkfnj/yvSbypPievFzRv170fS0vIUn6idQtQSwcIFreJ1AAAAAIAAFBLAwQUAAAACAAAACEAGneK5AAAAAIAAABMAAAAYm9va3NoZWV0MS54bWyzAAB//+2SwY7CMAxG7/0Vke8O69YqC7pD70K88SBmS8kVAsTu77/XNrR0Ik7mZmdmF7Lu2vvi/5kw92ZLSUISklCFphaKXVX9XvUfVf9R9R9V/1v1v1VPkCTh6fN6+S8NIn3oT9mU93InBf7vS78TfM+w7fP3TfIxyvFpDvx8Rfs5hLNooM/cvid/kvw0hY+Z+3S7/U30XyW+Je79TfxuHiffl3yfv5+PkO8LVBLHCBp3iuQAAAAAgAAAUEsDBBQAAAAIAAAAIQAtXy4uAAAABAAAABMAAABSZWxzL3dvcmtib29rLnhtbC5yZWxzswAA//+2UwYvCMAzG7/0VQ++2tg7mYIfe9DDe9SBlS8kWAsTu77/XNjp0Ik72ZmdnFrKmvS/9vifMndlSkpCEJFShqYVsE0W7m+P9JM6zMAkVu4bwdpC2VbRVu74zNikARUlyG0vpgTDF/pNoqbVOGQQ0idpGrezmIB8GKpYwOAOOGQv9R8yh417ZViq62vV5JQmI09u1/KceRRLRwI65dU/pLvIhvofvT76vSbxrHicfr2ldXz4PQ0fEUn6i9QpQSwcI1zEnf3gAAAAEAAAAUEsBAhQAFAAAAAgAAAAhACdf1S4AAAAEAAAAEwAAAAAAAAAAAAAAAAAAAAAAW0NvbnRlbnRfVHlwZXNdLnhtbFBLAQIUABQAAAAIAAAAIQAat4nUAAAAAgAAABMAAAAAAAAAAAAAAAAAXQAAAHhsL3JlbHMvd29ya2Jvb2sucmVscy54bWxQSwECFAAUAAAACAAAACEAGneK5AAAAAIAAABMAAAAAAAAAAAAAAAAAL0AAABib9v2v3NoZWV0MS54bWxQSwECFAAUAAAACAAAACEALV8uLgAAAAQAAAATAAAAAAAAAAAAAAAAAMYAAABSZWxzL3dvcmtib29rLnhtbC5yZWxzUEsFBgAAAAAEAAQA0AAAAOEAAAAAAA==';
 
         const binaryString = atob(validExcelBase64);
         const bytes = new Uint8Array(binaryString.length);
@@ -124,16 +121,31 @@ export function exportToCSV(enquiries: Enquiry[]) {
         const headers = ['S.No', 'Enquiry ID', 'Name', 'Email', 'Phone', 'Message', 'Status', 'Date'];
 
         // Create CSV rows
-        const rows = enquiries.map((enq, idx) => [
-            idx + 1,
-            enq.enquiryNumber || enq.id || 'N/A',
-            enq.name || 'N/A',
-            enq.email || 'N/A',
-            enq.phone || 'N/A',
-            (enq.message || enq.description || 'N/A').replace(/"/g, '""'), // Escape quotes
-            enq.status || 'NEW',
-            enq.createdAt ? new Date(enq.createdAt).toLocaleDateString('en-IN') : 'N/A',
-        ]);
+        const rows = enquiries.map((enq, idx) => {
+            const sanitize = (val: any) => {
+                let str = String(val || '');
+                // Sanitize newlines
+                str = str.replace(/[\r\n]+/g, ' ');
+                // Escape double quotes
+                str = str.replace(/"/g, '""');
+                // CSV Injection prevention
+                if (str.startsWith('=') || str.startsWith('+') || str.startsWith('-') || str.startsWith('@')) {
+                    str = `'${str}`;
+                }
+                return str;
+            };
+
+            return [
+                idx + 1,
+                sanitize(enq.enquiryNumber || enq.id),
+                sanitize(enq.name),
+                sanitize(enq.email),
+                sanitize(enq.phone),
+                sanitize(enq.message || enq.description),
+                sanitize(enq.status),
+                enq.createdAt ? new Date(enq.createdAt).toLocaleDateString('en-IN') : 'N/A',
+            ];
+        });
 
         // Combine headers and rows
         const csvContent = [

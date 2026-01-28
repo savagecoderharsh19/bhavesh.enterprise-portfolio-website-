@@ -54,7 +54,7 @@ export async function GET() {
                     name: enq.name || '',
                     email: enq.email || '',
                     phone: enq.phone || '',
-                    message: (enq.description || enq.internalNotes || '').substring(0, 32000),
+                    message: (enq.description || '').substring(0, 32000),
                     status: enq.status || 'NEW',
                     date: new Date(enq.createdAt).toLocaleDateString('en-IN'),
                 });

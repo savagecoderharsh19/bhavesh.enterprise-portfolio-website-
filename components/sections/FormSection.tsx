@@ -2,6 +2,8 @@
 
 import { ClipboardList, Upload, UserCheck, Headphones, UploadCloud } from "lucide-react"
 
+import { useState, useRef } from "react"
+
 const processSteps = [
     { icon: ClipboardList, text: "Share your requirement" },
     { icon: Upload, text: "Upload photos or drawings (optional)" },
@@ -10,6 +12,18 @@ const processSteps = [
 ]
 
 export function FormSection() {
+    const fileInputRef = useRef<HTMLInputElement>(null);
+    const [fileName, setFileName] = useState<string | null>(null);
+
+    const handleUploadClick = () => {
+        fileInputRef.current?.click();
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (file) setFileName(file.name);
+    };
+
     return (
         <section id="form-section" className="flex flex-col lg:flex-row w-full min-h-[600px]">
             {/* Left Column - Blue Info */}
@@ -35,26 +49,38 @@ export function FormSection() {
                 <form className="space-y-6">
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                         <div className="space-y-2">
-                            <label className="text-[14px] font-medium text-[#374151]">Name <span className="text-gray-400">(Required)</span></label>
-                            <input type="text" className="w-full border border-gray-300 rounded px-4 py-3 focus:ring-2 focus:ring-[#0C4A6E] focus:border-transparent outline-none transition-all" />
+                            <label htmlFor="fs-name" className="text-[14px] font-medium text-[#374151]">Name <span className="text-gray-400">(Required)</span></label>
+                            <input id="fs-name" name="name" required type="text" className="w-full border border-gray-300 rounded px-4 py-3 focus:ring-2 focus:ring-[#0C4A6E] focus:border-transparent outline-none transition-all" />
                         </div>
                         <div className="space-y-2">
-                            <label className="text-[14px] font-medium text-[#374151]">Email <span className="text-gray-400">(Required)</span></label>
-                            <input type="email" className="w-full border border-gray-300 rounded px-4 py-3 focus:ring-2 focus:ring-[#0C4A6E] focus:border-transparent outline-none transition-all" />
+                            <label htmlFor="fs-email" className="text-[14px] font-medium text-[#374151]">Email <span className="text-gray-400">(Required)</span></label>
+                            <input id="fs-email" name="email" required type="email" className="w-full border border-gray-300 rounded px-4 py-3 focus:ring-2 focus:ring-[#0C4A6E] focus:border-transparent outline-none transition-all" />
                         </div>
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[14px] font-medium text-[#374151]">Phone <span className="text-gray-400">(Optional)</span></label>
-                        <input type="tel" className="w-full border border-gray-300 rounded px-4 py-3 focus:ring-2 focus:ring-[#0C4A6E] focus:border-transparent outline-none transition-all" />
+                        <label htmlFor="fs-phone" className="text-[14px] font-medium text-[#374151]">Phone <span className="text-gray-400">(Optional)</span></label>
+                        <input id="fs-phone" name="phone" type="tel" className="w-full border border-gray-300 rounded px-4 py-3 focus:ring-2 focus:ring-[#0C4A6E] focus:border-transparent outline-none transition-all" />
                     </div>
 
                     <div className="space-y-2">
                         <label className="text-[14px] font-medium text-[#374151]">Engineering Requirement <span className="text-gray-400">(Required)</span></label>
-                        <div className="border-2 border-dashed border-gray-300 rounded bg-[#F9FAFB] p-8 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer group">
+                        <div
+                            onClick={handleUploadClick}
+                            className="border-2 border-dashed border-gray-300 rounded bg-[#F9FAFB] p-8 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer group"
+                        >
+                            <input
+                                type="file"
+                                ref={fileInputRef}
+                                onChange={handleFileChange}
+                                className="hidden"
+                                accept=".pdf,.png,.jpg,.jpeg,.dwg,.dxf"
+                            />
                             <UploadCloud className="w-10 h-10 text-gray-400 mb-2 group-hover:text-[#0C4A6E]" />
                             <p className="text-[14px] text-gray-500">
-                                <span className="font-semibold text-[#0C4A6E]">Click to upload</span> or drag and drop
+                                <span className="font-semibold text-[#0C4A6E]">
+                                    {fileName ? `File: ${fileName}` : "Click to upload"}
+                                </span> or drag and drop
                             </p>
                             <p className="text-[12px] text-gray-400 mt-1">
                                 PDF, PNG, JPG, CAD (max 10MB)
@@ -63,8 +89,8 @@ export function FormSection() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[14px] font-medium text-[#374151]">Subject <span className="text-gray-400">(Optional)</span></label>
-                        <input type="text" className="w-full border border-gray-300 rounded px-4 py-3 focus:ring-2 focus:ring-[#0C4A6E] focus:border-transparent outline-none transition-all" />
+                        <label htmlFor="fs-subject" className="text-[14px] font-medium text-[#374151]">Subject <span className="text-gray-400">(Optional)</span></label>
+                        <input id="fs-subject" name="subject" type="text" className="w-full border border-gray-300 rounded px-4 py-3 focus:ring-2 focus:ring-[#0C4A6E] focus:border-transparent outline-none transition-all" />
                     </div>
 
                     <button

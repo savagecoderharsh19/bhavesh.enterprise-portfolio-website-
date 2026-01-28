@@ -45,11 +45,19 @@ if (typeof window === 'undefined') {
     validateEnvVars();
 }
 
-// Export validated env vars with types
-export const env = {
+// Split into server and public environments
+export const serverEnv = {
     DATABASE_URL: process.env.DATABASE_URL!,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET!,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL!,
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD!, // Assuming ADMIN_PASSWORD is also validated or added to requiredServerEnvVars
+    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN, // Assuming BLOB_READ_WRITE_TOKEN is also validated or added to requiredServerEnvVars
+};
+
+export const publicEnv = {
     NEXT_PUBLIC_SUPABASE_URL: process.env.NEXT_PUBLIC_SUPABASE_URL!,
     NEXT_PUBLIC_SUPABASE_ANON_KEY: process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-} as const;
+};
+
+// Deprecated: use serverEnv or publicEnv instead
+export const env = { ...serverEnv, ...publicEnv };

@@ -30,11 +30,10 @@ export async function POST(req: Request) {
 
         while (retries > 0) {
             try {
-                // Generate a simple enquiry number (Concurrency safe via retry)
-                const count = await prisma.enquiry.count();
-                // Add random component to reduce collision chance in race conditions
-                const suffix = (count + 1001 + Math.floor(Math.random() * 10)).toString();
-                const enquiryNumber = `BE-${suffix}`;
+                // Generate robust unique ID instead of reliance on count
+                const timestamp = Date.now();
+                const randomHex = Math.random().toString(16).substring(2, 8).toUpperCase();
+                const enquiryNumber = `BE-${timestamp}-${randomHex}`;
 
                 const fileNames = validData.fileNames ?? validData.files ?? []
                 const fileUrls = validData.fileUrls ?? []
@@ -104,7 +103,7 @@ export async function GET() {
         return NextResponse.json(safeEnquiries)
     } catch (error) {
         console.error('Enquiry API Read Error:', error)
-        return NextResponse.json([], { status: 500 })
+        return NextResponse.json({ error: 'Enquiry API Read Error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
     }
 }
 
@@ -115,22 +114,33 @@ export async function PATCH(req: Request) {
             return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
         }
 
-        const body = await req.json()
-        const { id, status, internalNotes } = body
+        const { id, status, internalNotes } = await req.json()
 
         if (!id) {
             return NextResponse.json({ error: 'Missing ID' }, { status: 400 })
         }
 
-        const updatedEnquiry = await prisma.enquiry.update({
-            where: { id },
-            data: {
-                ...(status && { status }),
-                ...(internalNotes !== undefined && { internalNotes })
-            }
-        })
+        // Validate status enum
+        const ALLOWED_STATUSES = ['NEW', 'IN_PROGRESS', 'UNDER_REVIEW', 'RESPONDED', 'COMPLETED'];
+        if (status && !ALLOWED_STATUSES.includes(status)) {
+            return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
+        }
 
-        return NextResponse.json(updatedEnquiry)
+        try {
+            const enquiry = await prisma.enquiry.update({
+                where: { id },
+                data: {
+                    ...(status && { status }),
+                    ...(internalNotes !== undefined && { internalNotes })
+                },
+            })
+            return NextResponse.json({ success: true, enquiry })
+        } catch (err: any) {
+            if (err.code === 'P2025') {
+                return NextResponse.json({ error: 'Enquiry not found' }, { status: 404 });
+            }
+            throw err;
+        }
     } catch (error) {
         console.error('Enquiry API Update Error:', error)
         return NextResponse.json({ error: 'Failed to update enquiry' }, { status: 500 })
@@ -156,8 +166,11 @@ export async function DELETE(req: Request) {
         })
 
         return NextResponse.json({ success: true })
-    } catch (error) {
+    } catch (error: any) {
         console.error('Enquiry API Delete Error:', error)
-        return NextResponse.json({ error: 'Failed to delete enquiry' }, { status: 500 })
+        if (error.code === 'P2025') {
+            return NextResponse.json({ error: 'Enquiry not found' }, { status: 404 })
+        }
+        return NextResponse.json({ error: 'Failed to delete' }, { status: 500 })
     }
 }

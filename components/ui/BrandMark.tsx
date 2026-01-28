@@ -61,7 +61,8 @@ export function BrandMark({ className = "w-12 h-12", color = "#D97706" }) {
             <motion.div
                 animate={{ scale: [1, 1.2, 1], opacity: [0.1, 0.3, 0.1] }}
                 transition={{ duration: 4, repeat: Infinity }}
-                className="absolute inset-0 rounded-full blur-xl bg-[#D97706]"
+                className="absolute inset-0 rounded-full blur-xl"
+                style={{ backgroundColor: color }}
             />
         </div>
     )

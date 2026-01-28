@@ -42,7 +42,7 @@ export function Footer() {
                             </div>
                             <div>
                                 <h5 className="text-[11px] font-black text-[#D97706] uppercase tracking-wider mb-2">Industrial Rubber</h5>
-                                <p className="text-[12px] text-gray-400 font-medium">Nitrile, Silicone, Viton, Neoprene, Fabric Bonded</p>
+                                <p className="text-[12px] text-gray-500 font-medium">Nitrile, Silicone, Viton, Neoprene, Fabric Bonded</p>
                             </div>
                         </div>
                     </div>
@@ -73,7 +73,7 @@ export function Footer() {
                             <div className="space-y-3">
                                 <div className="flex items-center gap-4">
                                     <Phone className="w-5 h-5 text-[#D97706] shrink-0" />
-                                    <a href="tel:9833491238" className="text-[13px] text-gray-400 font-medium hover:text-white transition-colors">
+                                    <a href="tel:+919833491238" className="text-[13px] text-gray-400 font-medium hover:text-white transition-colors">
                                         +91 9833491238
                                     </a>
                                 </div>
@@ -101,7 +101,10 @@ export function Footer() {
                         <Link href="#capabilities" className="hover:text-white transition-colors">Capabilities</Link>
                         <Link href="#portfolio" className="hover:text-white transition-colors">Portfolio</Link>
                         <Link href="#enquiry" className="hover:text-white transition-colors">Get Quote</Link>
-                        <span className="hover:text-white transition-colors cursor-pointer">Sitemap</span>
+                        <span
+                            onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
+                            className="hover:text-white transition-colors cursor-pointer"
+                        >Sitemap</span>
                     </div>
                 </div>
             </div>

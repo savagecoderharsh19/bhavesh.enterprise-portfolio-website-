@@ -37,7 +37,7 @@ const capabilities = [
     {
         icon: Cog,
         title: "Custom Fabrication",
-        description: "Tailored fabrication that specific applications and industries.",
+        description: "Tailored fabrication for specific applications and industries.",
         accent: "blue"
     }
 ]

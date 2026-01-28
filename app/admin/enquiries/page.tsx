@@ -35,14 +35,30 @@ export default function EnquiriesPage() {
     const [error, setError] = useState<string | null>(null)
 
     useEffect(() => {
-        fetch("/api/enquiries")
+        const controller = new AbortController()
+
+        fetch("/api/enquiries", { signal: controller.signal })
             .then((r) => {
                 if (!r.ok) throw new Error("Failed to load")
                 return r.json()
             })
-            .then(setEnquiries)
-            .catch((e) => setError(e.message))
-            .finally(() => setLoading(false))
+            .then(data => {
+                if (!controller.signal.aborted) {
+                    setEnquiries(data)
+                }
+            })
+            .catch((e) => {
+                if (e.name !== 'AbortError' && !controller.signal.aborted) {
+                    setError(e.message)
+                }
+            })
+            .finally(() => {
+                if (!controller.signal.aborted) {
+                    setLoading(false)
+                }
+            })
+
+        return () => controller.abort()
     }, [])
 
     const filtered = enquiries.filter(
@@ -76,8 +92,13 @@ export default function EnquiriesPage() {
                     <Button
                         size="sm"
                         onClick={async () => {
-                            const { copyToClipboard } = await import('@/lib/exportToExcel');
-                            copyToClipboard(filtered);
+                            try {
+                                const { copyToClipboard } = await import('@/lib/exportToExcel');
+                                await copyToClipboard(filtered);
+                            } catch (err) {
+                                console.error("Export error:", err);
+                                alert("Failed to copy data to clipboard.");
+                            }
                         }}
                         disabled={loading || filtered.length === 0}
                         className="bg-green-600 hover:bg-green-700 text-white"
@@ -147,7 +168,7 @@ export default function EnquiriesPage() {
                                                 <span
                                                     className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusClass(enquiry.status)}`}
                                                 >
-                                                    {enquiry.status.replace("_", " ")}
+                                                    {enquiry.status.replaceAll("_", " ")}
                                                 </span>
                                             </TableCell>
                                             <TableCell className="text-right">

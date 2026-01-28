@@ -25,9 +25,9 @@ model Enquiry {
   timeline          String?
   requirementType   String?
   
-  // Files - Stored as JSON strings in SQLite
-  fileUrls          String    @default("[]")
-  fileNames         String    @default("[]")
+  // Files - stored as JSON in PostgreSQL
+  fileUrls          Json      @default("[]")
+  fileNames         Json      @default("[]")
   
   // Status & Tracking
   status            String    @default("NEW")

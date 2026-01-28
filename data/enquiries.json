@@ -1,23 +1,25 @@
 [
   {
-    "id": "ENQ-1769256455604",
-    "name": "mihir ",
-    "phone": "8888888888",
-    "email": "mihir@123.com",
+    "id": "ENQ-SAMPLE-001",
+    "name": "Test User 1",
+    "phone": "555-0100",
+    "email": "test1@example.com",
     "quantity": "500",
-    "description": "tabel fans",
+    "description": "Industrial table fans",
     "requirementType": "Custom Manufacturing",
     "files": [],
     "createdAt": "2026-01-24T12:07:35.604Z",
     "status": "NEW"
   },
   {
-    "id": "ENQ-1769242867551",
-    "name": "Test User",
-    "email": "test@test.com",
-    "phone": "9998887777",
-    "subject": "Testing enquiry flow",
-    "requirement": "Testing enquiry flow",
+    "id": "ENQ-SAMPLE-002",
+    "name": "Test User 2",
+    "email": "test2@example.com",
+    "phone": "555-0101",
+    "quantity": "10",
+    "description": "Testing enquiry flow for general requirements",
+    "requirementType": "General Enquiry",
+    "files": [],
     "createdAt": "2026-01-24T08:21:07.551Z",
     "status": "NEW"
   }

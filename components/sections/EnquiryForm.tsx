@@ -16,7 +16,7 @@ import { cn } from "@/lib/utils"
 
 export function EnquiryForm() {
     const [isSubmitting, setIsSubmitting] = useState(false)
-    const [uploadedFiles, setUploadedFiles] = useState<File[]>([])
+    const [uploadedFiles, setUploadedFiles] = useState<{ id: string; file: File }[]>([])
     const [submitSuccess, setSubmitSuccess] = useState(false)
 
     const defaultValues: Partial<EnquiryFormValues> = {
@@ -37,17 +37,30 @@ export function EnquiryForm() {
     } = form
 
     const onDrop = (acceptedFiles: File[]) => {
-        setUploadedFiles(prev => [...prev, ...acceptedFiles])
-        setValue("files", [...uploadedFiles, ...acceptedFiles])
+        setUploadedFiles(prev => {
+            const newFiles = acceptedFiles.map(f => ({ id: Math.random().toString(36).substr(2, 9), file: f }));
+            const next = [...prev, ...newFiles];
+            setValue("files", next.map(nf => nf.file));
+            return next;
+        })
     }
 
-    const { getRootProps, getInputProps, isDragActive } = useDropzone({ onDrop })
+    const { getRootProps, getInputProps, isDragActive } = useDropzone({
+        onDrop,
+        accept: {
+            'application/pdf': ['.pdf'],
+            'image/*': ['.png', '.jpg', '.jpeg'],
+            'application/acad': ['.dwg', '.dxf']
+        },
+        maxSize: 10 * 1024 * 1024
+    })
 
-    const removeFile = (index: number) => {
-        const newFiles = [...uploadedFiles]
-        newFiles.splice(index, 1)
-        setUploadedFiles(newFiles)
-        setValue("files", newFiles)
+    const removeFile = (id: string) => {
+        setUploadedFiles(prev => {
+            const next = prev.filter(f => f.id !== id);
+            setValue("files", next.map(nf => nf.file));
+            return next;
+        })
     }
 
     async function onSubmit(data: EnquiryFormValues) {
@@ -57,16 +70,25 @@ export function EnquiryForm() {
             const fileNames: string[] = []
             const fileUrls: string[] = []
 
-            for (const f of uploadedFiles) {
+            for (const { file: f } of uploadedFiles) {
                 fileNames.push(f.name)
                 try {
                     const fd = new FormData()
                     fd.append("file", f)
                     const up = await fetch("/api/upload", { method: "POST", body: fd })
                     const j = await up.json()
-                    fileUrls.push(up.ok && j?.url ? j.url : "")
-                } catch {
+
+                    if (up.ok && j?.url) {
+                        fileUrls.push(j.url)
+                    } else {
+                        console.error("Upload failed for file:", f.name, j?.error);
+                        fileUrls.push("")
+                        alert(`Failed to upload ${f.name}: ${j?.error || 'Unknown error'}`);
+                    }
+                } catch (error) {
+                    console.error("Upload error for file:", f.name, error);
                     fileUrls.push("")
+                    alert(`System error uploading ${f.name}`);
                 }
             }
 
@@ -87,7 +109,8 @@ export function EnquiryForm() {
             setSubmitSuccess(true)
             reset()
             setUploadedFiles([])
-            setTimeout(() => setSubmitSuccess(false), 5000)
+            const timeout = setTimeout(() => setSubmitSuccess(false), 5000)
+            return () => clearTimeout(timeout)
         } catch (error) {
             console.error("Submission error:", error)
             alert(error instanceof Error ? error.message : "Failed to submit enquiry. Please try again.")
@@ -137,7 +160,7 @@ export function EnquiryForm() {
                             <h4 className="text-xl font-bold text-white mb-4">Technical Support</h4>
                             <p className="text-gray-400 text-sm leading-relaxed mb-6">
                                 Need immediate technical assistance or have questions about material compatibility?
-                                our specialized engineering team is available for priority consultations.
+                                Our specialized engineering team is available for priority consultations.
                             </p>
                             <div className="space-y-4">
                                 <div className="flex items-center gap-3">
@@ -232,18 +255,18 @@ export function EnquiryForm() {
                                     {/* File List */}
                                     <div className="space-y-2 mt-4">
                                         <AnimatePresence>
-                                            {uploadedFiles.map((file, i) => (
+                                            {uploadedFiles.map(({ id, file }) => (
                                                 <motion.div
                                                     initial={{ opacity: 0, height: 0 }}
                                                     animate={{ opacity: 1, height: "auto" }}
                                                     exit={{ opacity: 0, height: 0 }}
-                                                    key={i}
+                                                    key={id}
                                                     className="flex items-center justify-between text-sm bg-white/5 p-2 rounded-md border border-white/10"
                                                 >
                                                     <span className="truncate max-w-[200px] text-gray-300">{file.name}</span>
                                                     <button
                                                         type="button"
-                                                        onClick={() => removeFile(i)}
+                                                        onClick={() => removeFile(id)}
                                                         className="text-gray-500 hover:text-red-400 transition-colors"
                                                     >
                                                         <X className="h-4 w-4" />

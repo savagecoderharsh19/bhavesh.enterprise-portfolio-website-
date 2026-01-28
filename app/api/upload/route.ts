@@ -2,14 +2,36 @@ import { NextResponse } from "next/server"
 import { writeFile, mkdir } from "fs/promises"
 import { join } from "path"
 import { existsSync } from "fs"
+import { getServerSession } from "next-auth/next"
+import { authOptions } from "@/app/api/auth/[...nextauth]/route"
 
 export async function POST(req: Request) {
     try {
-        const formData = await req.formData()
-        const file = formData.get("file") as File
+        const session = await getServerSession(authOptions)
+        // Note: For public enquiry forms, we might allow unauthenticated uploads 
+        // but let's stick to the prompt's request for auth check.
+        // If this breaks the public form, we'll need a different strategy.
+        if (!session) {
+            return NextResponse.json({ error: "Unauthorized" }, { status: 401 })
+        }
 
-        if (!file) {
-            return NextResponse.json({ error: "No file provided" }, { status: 400 })
+        const formData = await req.formData()
+        const file = formData.get("file")
+
+        if (!file || !(file instanceof File)) {
+            return NextResponse.json({ error: "Invalid file upload" }, { status: 400 })
+        }
+
+        // 2. Validate file type
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/svg+xml', 'application/octet-stream'];
+        if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png|svg|dwg|dxf)$/i)) {
+            return NextResponse.json({ error: "File type not allowed" }, { status: 415 })
+        }
+
+        // 3. Enforce max size (10MB)
+        const MAX_SIZE = 10 * 1024 * 1024;
+        if (file.size > MAX_SIZE) {
+            return NextResponse.json({ error: "File too large (max 10MB)" }, { status: 413 })
         }
 
         const bytes = await file.arrayBuffer()

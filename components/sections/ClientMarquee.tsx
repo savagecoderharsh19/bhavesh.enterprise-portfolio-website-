@@ -54,7 +54,7 @@ export function ClientMarquee() {
                     }}
                 >
                     {/* Double the list for seamless loop */}
-                    {[...clients, ...clients, ...clients].map((client, idx) => {
+                    {[...clients, ...clients].map((client, idx) => {
                         const uniqueId = `${client.name}-${idx}`;
                         const showText = failedLogos.has(uniqueId) || !client.logo;
 

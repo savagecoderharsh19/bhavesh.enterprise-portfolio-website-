@@ -14,38 +14,31 @@ export const authOptions: AuthOptions = {
                 password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) {
-                    throw new Error('Missing credentials')
-                }
+                if (!credentials?.email || !credentials?.password) return null
 
+                let admin;
                 try {
-                    // Find admin user
-                    const admin = await prisma.admin.findUnique({
+                    admin = await prisma.admin.findUnique({
                         where: { email: credentials.email },
                     })
-
-                    if (!admin) {
-                        throw new Error('Invalid credentials')
-                    }
-
-                    // Verify password
-                    const isValidPassword = await bcrypt.compare(
-                        credentials.password,
-                        admin.password
-                    )
-
-                    if (!isValidPassword) {
-                        throw new Error('Invalid credentials')
-                    }
-
-                    return {
-                        id: admin.id,
-                        email: admin.email,
-                        role: admin.role,
-                    }
                 } catch (error) {
-                    console.error("Auth DB Error:", error)
-                    return null
+                    console.error("Database error during authentication:", error);
+                    return null;
+                }
+
+                if (!admin) return null
+
+                const isPasswordValid = await bcrypt.compare(
+                    credentials.password,
+                    admin.password
+                )
+
+                if (!isPasswordValid) return null
+
+                return {
+                    id: admin.id,
+                    email: admin.email,
+                    role: admin.role,
                 }
             },
         }),

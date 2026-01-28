@@ -83,7 +83,7 @@ export default function EnquiryDetailPage({ params }: { params: Promise<{ id: st
                         <span
                             className={`inline-flex rounded-full px-2.5 py-0.5 text-xs font-medium ${statusClass(enquiry.status)}`}
                         >
-                            {enquiry.status.replace("_", " ")}
+                            {enquiry.status.replaceAll("_", " ")}
                         </span>
                     </h1>
                     <p className="text-gray-400 text-sm">

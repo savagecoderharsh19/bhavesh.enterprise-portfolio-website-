@@ -14,19 +14,18 @@ export async function GET(
         }
 
         const { id } = await params
+
+        // Authorization / Ownership check early to prevent ID enumeration
+        if (!session.user || session.user.role !== 'ADMIN') {
+            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
+        }
+
         const enquiry = await prisma.enquiry.findUnique({
             where: { id },
         })
 
         if (!enquiry) {
             return NextResponse.json({ error: "Enquiry not found" }, { status: 404 })
-        }
-
-        // Authorization / Ownership check
-        // Assuming 'role' exists on session user (from Admin model)
-        // If Enquiry had an ownerId, we would check: enquiry.ownerId === session.user.id
-        if (session.user.role !== 'ADMIN') {
-            return NextResponse.json({ error: "Forbidden" }, { status: 403 });
         }
 
         let fileNames = [];

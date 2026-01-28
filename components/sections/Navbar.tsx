@@ -10,7 +10,17 @@ import { BrandLogo } from "@/components/ui/BrandLogo"
 
 export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false)
+    const [activeSection, setActiveSection] = useState('home');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
+
+    useEffect(() => {
+        if (isMobileMenuOpen) {
+            document.body.style.overflow = 'hidden';
+        } else {
+            document.body.style.overflow = 'unset';
+        }
+        return () => { document.body.style.overflow = 'unset'; };
+    }, [isMobileMenuOpen]);
 
     useEffect(() => {
         const handleScroll = () => {

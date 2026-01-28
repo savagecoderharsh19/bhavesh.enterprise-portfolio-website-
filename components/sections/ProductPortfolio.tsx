@@ -243,8 +243,7 @@ export function ProductPortfolio() {
                     </p>
                 </div>
 
-                {/* Infinite Auto-Scrolling Container */}
-                <div className="relative overflow-hidden py-10">
+                <div className="relative overflow-hidden py-10 no-scrollbar">
                     <motion.div
                         className="flex"
                         animate={{
@@ -255,7 +254,7 @@ export function ProductPortfolio() {
                             repeat: Infinity,
                             ease: "linear",
                         }}
-                        whileHover={{ animationPlayState: "paused" }}
+                        style={{ width: 'max-content' }}
                     >
                         {/* First Set of Cards */}
                         {productCategories.map((category, idx) => (

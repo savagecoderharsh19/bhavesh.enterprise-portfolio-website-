@@ -10,6 +10,9 @@ Next.js app for the Bhavesh Enterprises site: marketing, enquiry form, and admin
    ```
    Edit `.env` and set:
    - `DATABASE_URL` – PostgreSQL connection string
+   - `NEXT_PUBLIC_SUPABASE_URL` – Supabase project URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` – Supabase anon/public key
+   *Note: `NEXT_PUBLIC_` variables are required for client-side Supabase features.*
    - `NEXTAUTH_SECRET` – e.g. `openssl rand -base64 32`
    - `NEXTAUTH_URL` – `http://localhost:3000` locally
    - `BLOB_READ_WRITE_TOKEN` – (optional) Vercel Blob token for file uploads

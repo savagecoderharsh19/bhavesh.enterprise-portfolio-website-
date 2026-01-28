@@ -7,9 +7,7 @@ export function AboutSection() {
                 </h2>
 
                 <p className="text-[16px] text-[#374151] leading-[1.8]">
-                    At Bhavesh Enterprises, we specialize in providing custom and cost-effective engineering solutions for diverse industries.
-                    With our experience engineering approach to work, we choose their early requirement test with previews, procure:
-                    from building urgent four custom manufacturing effect or engineering processes, so you can focus on your business.
+                    Bhavesh Enterprises is your trusted partner for integrated industrial solutions. We combine technical expertise with efficient sourcing to deliver custom, cost-effective manufacturing components tailored to your exact specifications. From rapid prototyping to high-precision engineering, our streamlined processes ensure quality results that help your business stay ahead.
                 </p>
             </div>
         </section>

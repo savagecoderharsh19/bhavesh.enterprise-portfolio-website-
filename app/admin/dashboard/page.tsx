@@ -91,10 +91,17 @@ export default function AdminDashboard() {
         setIsLoading(true)
         try {
             const res = await fetch('/api/enquiries')
+            if (!res.ok) {
+                const error = await res.json().catch(() => ({ error: res.statusText }))
+                throw new Error(error.error || `HTTP ${res.status}: ${res.statusText}`)
+            }
             const data = await res.json()
-            setEnquiries(data)
+            if (Array.isArray(data)) {
+                setEnquiries(data)
+            }
         } catch (error) {
             console.error("Failed to fetch enquiries", error)
+            alert(error instanceof Error ? error.message : "Failed to fetch enquiries")
         } finally {
             setIsLoading(false)
         }
@@ -110,9 +117,13 @@ export default function AdminDashboard() {
             })
             if (res.ok) {
                 setEnquiries(prev => prev.map(e => e.id === id ? { ...e, status: newStatus } : e))
+            } else {
+                const errorData = await res.json().catch(() => ({}))
+                alert(`Failed to update status: ${errorData.error || res.statusText}`)
             }
         } catch (error) {
             console.error("Failed to update status", error)
+            alert("An error occurred while updating status.")
         } finally {
             setUpdatingId(null)
         }

@@ -27,14 +27,14 @@ export default function AdminLoginPage() {
 
             if (result?.error) {
                 setError('AUTHENTICATION FAILED: INVALID CREDENTIALS')
-                setIsLoading(false)
             } else if (result?.ok) {
-                router.push('/admin/dashboard')
+                await router.push('/admin/dashboard')
                 router.refresh()
             }
         } catch (error) {
             console.error('Login error:', error)
             setError('SYSTEM ERROR: PLEASE RETRY LATER')
+        } finally {
             setIsLoading(false)
         }
     }
@@ -84,10 +84,11 @@ export default function AdminLoginPage() {
                     {/* Form */}
                     <form onSubmit={handleSubmit} className="space-y-6">
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2 px-1">
+                            <label htmlFor="email" className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2 px-1">
                                 Terminal Identity (Email)
                             </label>
                             <input
+                                id="email"
                                 type="email"
                                 value={email}
                                 onChange={(e) => setEmail(e.target.value)}
@@ -99,11 +100,12 @@ export default function AdminLoginPage() {
                         </div>
 
                         <div>
-                            <label className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2 px-1">
+                            <label htmlFor="password" className="block text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-[0.2em] mb-2 px-1">
                                 Security Protocol (Password)
                             </label>
                             <div className="relative">
                                 <input
+                                    id="password"
                                     type="password"
                                     value={password}
                                     onChange={(e) => setPassword(e.target.value)}

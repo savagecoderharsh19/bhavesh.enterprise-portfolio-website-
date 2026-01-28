@@ -23,8 +23,10 @@ export async function POST(req: Request) {
         }
 
         // 2. Validate file type
-        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png', 'image/svg+xml', 'application/octet-stream'];
-        if (!allowedTypes.includes(file.type) && !file.name.match(/\.(pdf|jpe?g|png|svg|dwg|dxf)$/i)) {
+        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
+        const isAllowedExtension = /\.(pdf|jpe?g|png|dwg|dxf)$/i.test(file.name);
+
+        if (!allowedTypes.includes(file.type) && !isAllowedExtension) {
             return NextResponse.json({ error: "File type not allowed" }, { status: 415 })
         }
 

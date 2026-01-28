@@ -10,7 +10,6 @@ import { BrandLogo } from "@/components/ui/BrandLogo"
 
 export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false)
-    const [activeSection, setActiveSection] = useState('home');
     const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false)
 
     useEffect(() => {

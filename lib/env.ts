@@ -7,6 +7,7 @@ const requiredServerEnvVars = [
     'DATABASE_URL',
     'NEXTAUTH_SECRET',
     'NEXTAUTH_URL',
+    'ADMIN_PASSWORD',
 ] as const;
 
 const requiredClientEnvVars = [
@@ -50,8 +51,8 @@ export const serverEnv = {
     DATABASE_URL: process.env.DATABASE_URL!,
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET!,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL!,
-    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD!, // Assuming ADMIN_PASSWORD is also validated or added to requiredServerEnvVars
-    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN, // Assuming BLOB_READ_WRITE_TOKEN is also validated or added to requiredServerEnvVars
+    ADMIN_PASSWORD: process.env.ADMIN_PASSWORD!,
+    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
 };
 
 export const publicEnv = {

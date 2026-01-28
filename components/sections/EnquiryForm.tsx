@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { zodResolver } from "@hookform/resolvers/zod"
 import { useDropzone } from "react-dropzone"
@@ -18,6 +18,15 @@ export function EnquiryForm() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [uploadedFiles, setUploadedFiles] = useState<{ id: string; file: File }[]>([])
     const [submitSuccess, setSubmitSuccess] = useState(false)
+    const [fileError, setFileError] = useState<string | null>(null)
+
+    // Move timeout to useEffect
+    useEffect(() => {
+        if (submitSuccess) {
+            const timeout = setTimeout(() => setSubmitSuccess(false), 5000)
+            return () => clearTimeout(timeout)
+        }
+    }, [submitSuccess])
 
     const defaultValues: Partial<EnquiryFormValues> = {
         requirementType: "Custom Manufacturing",
@@ -36,13 +45,33 @@ export function EnquiryForm() {
         reset
     } = form
 
-    const onDrop = (acceptedFiles: File[]) => {
-        setUploadedFiles(prev => {
-            const newFiles = acceptedFiles.map(f => ({ id: Math.random().toString(36).substr(2, 9), file: f }));
-            const next = [...prev, ...newFiles];
-            setValue("files", next.map(nf => nf.file));
-            return next;
-        })
+    const onDrop = (acceptedFiles: File[], fileRejections: any[]) => {
+        const manuallyAccepted: File[] = [];
+
+        fileRejections.forEach((rejection) => {
+            const isCAD = /\.(dwg|dxf)$/i.test(rejection.file.name);
+            const isSizeOk = rejection.file.size <= 10 * 1024 * 1024;
+
+            if (isCAD && isSizeOk) {
+                manuallyAccepted.push(rejection.file);
+            } else {
+                const error = rejection.errors[0]?.code === 'file-too-large'
+                    ? "File is too large (max 10MB)"
+                    : "Invalid file type. Only PDF, Images, and CAD files are allowed.";
+                alert(`${rejection.file.name}: ${error}`);
+            }
+        });
+
+        const allNewFiles = [...acceptedFiles, ...manuallyAccepted];
+
+        if (allNewFiles.length > 0) {
+            setUploadedFiles(prev => {
+                const newFiles = allNewFiles.map(f => ({ id: Math.random().toString(36).substring(2, 11), file: f }));
+                const next = [...prev, ...newFiles];
+                setValue("files", next.map(nf => nf.file));
+                return next;
+            });
+        }
     }
 
     const { getRootProps, getInputProps, isDragActive } = useDropzone({
@@ -50,7 +79,6 @@ export function EnquiryForm() {
         accept: {
             'application/pdf': ['.pdf'],
             'image/*': ['.png', '.jpg', '.jpeg'],
-            'application/acad': ['.dwg', '.dxf']
         },
         maxSize: 10 * 1024 * 1024
     })
@@ -71,7 +99,6 @@ export function EnquiryForm() {
             const fileUrls: string[] = []
 
             for (const { file: f } of uploadedFiles) {
-                fileNames.push(f.name)
                 try {
                     const fd = new FormData()
                     fd.append("file", f)
@@ -79,16 +106,17 @@ export function EnquiryForm() {
                     const j = await up.json()
 
                     if (up.ok && j?.url) {
+                        fileNames.push(f.name)
                         fileUrls.push(j.url)
                     } else {
                         console.error("Upload failed for file:", f.name, j?.error);
-                        fileUrls.push("")
                         alert(`Failed to upload ${f.name}: ${j?.error || 'Unknown error'}`);
+                        return; // Abort whole submission on error to keep names/urls in sync
                     }
                 } catch (error) {
                     console.error("Upload error for file:", f.name, error);
-                    fileUrls.push("")
                     alert(`System error uploading ${f.name}`);
+                    return; // Abort
                 }
             }
 
@@ -109,8 +137,6 @@ export function EnquiryForm() {
             setSubmitSuccess(true)
             reset()
             setUploadedFiles([])
-            const timeout = setTimeout(() => setSubmitSuccess(false), 5000)
-            return () => clearTimeout(timeout)
         } catch (error) {
             console.error("Submission error:", error)
             alert(error instanceof Error ? error.message : "Failed to submit enquiry. Please try again.")

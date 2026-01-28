@@ -101,10 +101,12 @@ export function Footer() {
                         <Link href="#capabilities" className="hover:text-white transition-colors">Capabilities</Link>
                         <Link href="#portfolio" className="hover:text-white transition-colors">Portfolio</Link>
                         <Link href="#enquiry" className="hover:text-white transition-colors">Get Quote</Link>
-                        <span
+                        <button
+                            type="button"
+                            aria-label="Back to Top"
                             onClick={() => window.scrollTo({ top: 0, behavior: 'smooth' })}
                             className="hover:text-white transition-colors cursor-pointer"
-                        >Sitemap</span>
+                        >Back to Top</button>
                     </div>
                 </div>
             </div>

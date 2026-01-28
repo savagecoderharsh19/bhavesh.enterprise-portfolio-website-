@@ -14,14 +14,37 @@ const processSteps = [
 export function FormSection() {
     const fileInputRef = useRef<HTMLInputElement>(null);
     const [fileName, setFileName] = useState<string | null>(null);
+    const [fileError, setFileError] = useState<string | null>(null);
 
     const handleUploadClick = () => {
         fileInputRef.current?.click();
     };
 
-    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement> | { target: { files: FileList | null } }) => {
         const file = e.target.files?.[0];
-        if (file) setFileName(file.name);
+        setFileError(null);
+
+        if (file) {
+            if (file.size > 10 * 1024 * 1024) {
+                setFileError("File too large (max 10MB)");
+                setFileName(null);
+                if (fileInputRef.current) fileInputRef.current.value = "";
+                return;
+            }
+            setFileName(file.name);
+        }
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        const files = e.dataTransfer.files;
+        if (files) {
+            handleFileChange({ target: { files } } as any);
+        }
+    };
+
+    const handleDragOver = (e: React.DragEvent) => {
+        e.preventDefault();
     };
 
     return (
@@ -64,12 +87,16 @@ export function FormSection() {
                     </div>
 
                     <div className="space-y-2">
-                        <label className="text-[14px] font-medium text-[#374151]">Engineering Requirement <span className="text-gray-400">(Required)</span></label>
+                        <label htmlFor="attachment" className="text-[14px] font-medium text-[#374151]">Engineering Requirement <span className="text-gray-400">(Required)</span></label>
                         <div
                             onClick={handleUploadClick}
-                            className="border-2 border-dashed border-gray-300 rounded bg-[#F9FAFB] p-8 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer group"
+                            onDrop={handleDrop}
+                            onDragOver={handleDragOver}
+                            className={`border-2 border-dashed ${fileError ? 'border-red-300' : 'border-gray-300'} rounded bg-[#F9FAFB] p-8 flex flex-col items-center justify-center text-center hover:bg-gray-50 transition-colors cursor-pointer group`}
                         >
                             <input
+                                id="attachment"
+                                name="attachment"
                                 type="file"
                                 ref={fileInputRef}
                                 onChange={handleFileChange}
@@ -79,10 +106,10 @@ export function FormSection() {
                             <UploadCloud className="w-10 h-10 text-gray-400 mb-2 group-hover:text-[#0C4A6E]" />
                             <p className="text-[14px] text-gray-500">
                                 <span className="font-semibold text-[#0C4A6E]">
-                                    {fileName ? `File: ${fileName}` : "Click to upload"}
+                                    {fileName ? `File: ${fileName}` : fileError ? fileError : "Click to upload"}
                                 </span> or drag and drop
                             </p>
-                            <p className="text-[12px] text-gray-400 mt-1">
+                            <p className={`text-[12px] ${fileError ? 'text-red-400' : 'text-gray-400'} mt-1`}>
                                 PDF, PNG, JPG, CAD (max 10MB)
                             </p>
                         </div>

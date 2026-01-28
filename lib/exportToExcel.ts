@@ -143,7 +143,7 @@ export function exportToCSV(enquiries: Enquiry[]) {
                 sanitize(enq.phone),
                 sanitize(enq.message || enq.description),
                 sanitize(enq.status),
-                enq.createdAt ? new Date(enq.createdAt).toLocaleDateString('en-IN') : 'N/A',
+                sanitize(enq.createdAt ? new Date(enq.createdAt).toLocaleDateString('en-IN') : 'N/A'),
             ];
         });
 

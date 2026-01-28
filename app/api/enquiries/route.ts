@@ -3,6 +3,7 @@ import { getServerSession } from 'next-auth'
 import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
+import crypto from 'crypto'
 
 // Validation schema to match client-side
 const enquirySchema = z.object({
@@ -32,7 +33,7 @@ export async function POST(req: Request) {
             try {
                 // Generate robust unique ID instead of reliance on count
                 const timestamp = Date.now();
-                const randomHex = Math.random().toString(16).substring(2, 8).toUpperCase();
+                const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
                 const enquiryNumber = `BE-${timestamp}-${randomHex}`;
 
                 const fileNames = validData.fileNames ?? validData.files ?? []

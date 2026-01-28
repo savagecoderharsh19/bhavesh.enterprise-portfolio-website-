@@ -29,7 +29,7 @@ export default function AdminLoginPage() {
                 setError('AUTHENTICATION FAILED: INVALID CREDENTIALS')
             } else if (result?.ok) {
                 await router.push('/admin/dashboard')
-                router.refresh()
+                return // Avoid state updates after navigation
             }
         } catch (error) {
             console.error('Login error:', error)

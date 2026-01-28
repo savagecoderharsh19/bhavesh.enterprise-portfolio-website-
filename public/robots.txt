@@ -1,0 +1,10 @@
+# Bhavesh Enterprises Robots.txt
+# https://www.robotstxt.org/
+
+User-agent: *
+Allow: /
+Disallow: /admin/
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://bhaveshenterprises.com/sitemap.xml

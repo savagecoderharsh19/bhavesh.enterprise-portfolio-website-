@@ -1,36 +1,66 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# Bhavesh Enterprises
+
+Next.js app for the Bhavesh Enterprises site: marketing, enquiry form, and admin dashboard.
 
 ## Getting Started
 
-First, run the development server:
+1. **Copy environment variables**
+   ```bash
+   cp .env.example .env
+   ```
+   Edit `.env` and set:
+   - `DATABASE_URL` – PostgreSQL connection string
+   - `NEXTAUTH_SECRET` – e.g. `openssl rand -base64 32`
+   - `NEXTAUTH_URL` – `http://localhost:3000` locally
+   - `BLOB_READ_WRITE_TOKEN` – (optional) Vercel Blob token for file uploads
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+2. **Run**
+   ```bash
+   npm install
+   ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+3. **Database**
+   ```bash
+   npx prisma migrate deploy
+   npx prisma db seed
+   ```
+   **Admin Setup**:
+   The seed script creates the initial admin user (`admin@bhaveshenterprises.com`).
+   - **Local Development**: If `ADMIN_PASSWORD` is not in `.env`, a random password is generated and printed to the console.
+   - **Production**: The script **fails** if `ADMIN_PASSWORD` is not set. You must provide it explicitly.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+4. **Develop**
+   ```bash
+   npm run dev
+   ```
+   Open [http://localhost:3000](http://localhost:3000).
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## Deploy (Vercel)
 
-## Learn More
+1. Push to GitHub and import the project in Vercel.
+2. **Env vars** in Vercel:
+   - `DATABASE_URL` – Supabase connection string (Settings > Database)
+   - `NEXT_PUBLIC_SUPABASE_URL` – Supabase project URL
+   - `NEXT_PUBLIC_SUPABASE_ANON_KEY` – Supabase anon/public key
+   - `NEXTAUTH_SECRET` – Generate with `openssl rand -base64 32`
+   - `NEXTAUTH_URL` – `https://your-domain.com`
+   - `ADMIN_PASSWORD` – (Required for seeding) Strong initial admin password
 
-To learn more about Next.js, take a look at the following resources:
+3. **Build**: `prisma generate` runs automatically before `next build`.
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+4. **After first deploy**: run migrations:
+   ```bash
+   npx prisma migrate deploy
+   ```
+   **Secure Seeding**:
+   Do NOT run seeding from your local machine against the production database. Instead:
+   - Run `npx prisma db seed` as part of your CI/CD pipeline (e.g., GitHub Actions, Vercel Build Step) with `ADMIN_PASSWORD` securely injected as a secret.
+   - Or execute it from a secure bastion host / audited environment.
+   - The seed script will strictly fail in production if `ADMIN_PASSWORD` is missing.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Scripts
 
-## Deploy on Vercel
-
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
-
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+- `npm run dev` – development
+- `npm run build` – `prisma generate` + `next build`
+- `npm run start` – production server
+- `npm run lint` – ESLint

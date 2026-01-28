@@ -1,0 +1,56 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+model Enquiry {
+  id                String    @id @default(uuid())
+  enquiryNumber     String    @unique // BE-XXXX format
+  
+  // Customer Info
+  name              String
+  phone             String
+  email             String?
+  
+  // Requirement Details
+  quantity          String?
+  description       String
+  dimensions        String?
+  material          String?
+  application       String?
+  timeline          String?
+  requirementType   String?
+  
+  // Files - Stored as JSON strings in SQLite
+  fileUrls          String    @default("[]")
+  fileNames         String    @default("[]")
+  
+  // Status & Tracking
+  status            String    @default("NEW")
+  internalNotes     String?
+  
+  // Email Tracking
+  confirmationSent  Boolean   @default(false)
+  confirmationSentAt DateTime?
+  
+  // Timestamps
+  createdAt         DateTime  @default(now())
+  updatedAt         DateTime  @updatedAt
+  
+  @@index([status])
+  @@index([createdAt])
+}
+
+model Admin {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  password      String   // Hashed with bcrypt
+  role          String   @default("ADMIN")
+  lastLogin     DateTime?
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+}

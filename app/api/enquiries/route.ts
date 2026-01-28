@@ -86,13 +86,15 @@ export async function GET() {
             orderBy: { createdAt: 'desc' }
         })
         const safeEnquiries = enquiries.map(e => {
-            let fileNames = [];
-            let fileUrls = [];
+            let fileNames: string[] = [];
+            let fileUrls: string[] = [];
             try {
-                fileNames = JSON.parse(e.fileNames || '[]');
+                const fnRaw = e.fileNames;
+                fileNames = Array.isArray(fnRaw) ? fnRaw : JSON.parse(String(fnRaw || '[]'));
             } catch { fileNames = [] }
             try {
-                fileUrls = JSON.parse(e.fileUrls || '[]');
+                const fuRaw = e.fileUrls;
+                fileUrls = Array.isArray(fuRaw) ? fuRaw : JSON.parse(String(fuRaw || '[]'));
             } catch { fileUrls = [] }
 
             return {

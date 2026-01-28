@@ -48,6 +48,7 @@ Next.js app for the Bhavesh Enterprises site: marketing, enquiry form, and admin
    - `NEXTAUTH_SECRET` – Generate with `openssl rand -base64 32`
    - `NEXTAUTH_URL` – `https://your-domain.com`
    - `ADMIN_PASSWORD` – (Required for seeding) Strong initial admin password
+   - `BLOB_READ_WRITE_TOKEN` – (Required for file uploads) Create via Vercel Dashboard → Storage → Blob
 
 3. **Build**: `prisma generate` runs automatically before `next build`.
 

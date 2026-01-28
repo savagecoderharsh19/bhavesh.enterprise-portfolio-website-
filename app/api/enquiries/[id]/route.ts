@@ -28,13 +28,15 @@ export async function GET(
             return NextResponse.json({ error: "Enquiry not found" }, { status: 404 })
         }
 
-        let fileNames = [];
-        let fileUrls = [];
+        let fileNames: string[] = [];
+        let fileUrls: string[] = [];
         try {
-            fileNames = JSON.parse(enquiry.fileNames || '[]');
+            const fnRaw = enquiry.fileNames;
+            fileNames = Array.isArray(fnRaw) ? fnRaw : JSON.parse(String(fnRaw || '[]'));
         } catch { fileNames = [] }
         try {
-            fileUrls = JSON.parse(enquiry.fileUrls || '[]');
+            const fuRaw = enquiry.fileUrls;
+            fileUrls = Array.isArray(fuRaw) ? fuRaw : JSON.parse(String(fuRaw || '[]'));
         } catch { fileUrls = [] }
 
         return NextResponse.json({

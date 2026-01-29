@@ -4,6 +4,7 @@ import { authOptions } from '@/app/api/auth/[...nextauth]/route'
 import { prisma } from '@/lib/prisma'
 import { z } from 'zod'
 import crypto from 'crypto'
+import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from '@/lib/rate-limit'
 
 // Validation schema to match client-side
 const enquirySchema = z.object({
@@ -20,6 +21,22 @@ const enquirySchema = z.object({
 
 export async function POST(req: Request) {
     try {
+        // Rate limiting to prevent spam submissions
+        const clientId = getClientIdentifier(req)
+        const rateLimitResult = checkRateLimit(`enquiry:${clientId}`, RATE_LIMITS.FORM)
+
+        if (!rateLimitResult.allowed) {
+            return NextResponse.json(
+                { error: "Too many submissions. Please wait before trying again." },
+                {
+                    status: 429,
+                    headers: {
+                        'Retry-After': String(Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)),
+                    }
+                }
+            )
+        }
+
         const body = await req.json()
 
         // Validate input

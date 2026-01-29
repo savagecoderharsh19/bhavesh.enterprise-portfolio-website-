@@ -1,5 +1,6 @@
 import { NextResponse } from "next/server"
 import { createClient } from "@supabase/supabase-js"
+import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from "@/lib/rate-limit"
 
 // Create Supabase client for storage
 const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
@@ -16,9 +17,22 @@ const BUCKET_NAME = 'enquiry-files'
 
 export async function POST(req: Request) {
     try {
-        // Note: This endpoint is intentionally public to allow enquiry form submissions
-        // from unauthenticated visitors. File validation and size limits provide security.
-        // TODO: Add rate limiting in production to prevent abuse
+        // Rate limiting to prevent abuse
+        const clientId = getClientIdentifier(req)
+        const rateLimitResult = checkRateLimit(`upload:${clientId}`, RATE_LIMITS.UPLOAD)
+
+        if (!rateLimitResult.allowed) {
+            return NextResponse.json(
+                { error: "Too many upload requests. Please try again later." },
+                {
+                    status: 429,
+                    headers: {
+                        'Retry-After': String(Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)),
+                        'X-RateLimit-Remaining': '0',
+                    }
+                }
+            )
+        }
 
         const formData = await req.formData()
         const file = formData.get("file")

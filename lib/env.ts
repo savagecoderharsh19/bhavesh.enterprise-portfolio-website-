@@ -52,7 +52,7 @@ export const serverEnv = {
     NEXTAUTH_SECRET: process.env.NEXTAUTH_SECRET!,
     NEXTAUTH_URL: process.env.NEXTAUTH_URL!,
     ADMIN_PASSWORD: process.env.ADMIN_PASSWORD!,
-    BLOB_READ_WRITE_TOKEN: process.env.BLOB_READ_WRITE_TOKEN,
+    SUPABASE_SERVICE_ROLE_KEY: process.env.SUPABASE_SERVICE_ROLE_KEY,
 };
 
 export const publicEnv = {

@@ -15,7 +15,7 @@ Next.js app for the Bhavesh Enterprises site: marketing, enquiry form, and admin
    *Note: `NEXT_PUBLIC_` variables are required for client-side Supabase features.*
    - `NEXTAUTH_SECRET` – e.g. `openssl rand -base64 32`
    - `NEXTAUTH_URL` – `http://localhost:3000` locally
-   - `BLOB_READ_WRITE_TOKEN` – (optional) Vercel Blob token for file uploads
+   - `SUPABASE_SERVICE_ROLE_KEY` – (Required for file uploads) Service role key from Supabase
 
 2. **Run**
    ```bash
@@ -48,7 +48,7 @@ Next.js app for the Bhavesh Enterprises site: marketing, enquiry form, and admin
    - `NEXTAUTH_SECRET` – Generate with `openssl rand -base64 32`
    - `NEXTAUTH_URL` – `https://your-domain.com`
    - `ADMIN_PASSWORD` – (Required for seeding) Strong initial admin password
-   - `BLOB_READ_WRITE_TOKEN` – (Required for file uploads) Create via Vercel Dashboard → Storage → Blob
+   - `SUPABASE_SERVICE_ROLE_KEY` – (Required for file uploads) Supabase Dashboard → Settings → API → service_role
 
 3. **Build**: `prisma generate` runs automatically before `next build`.
 
@@ -61,6 +61,15 @@ Next.js app for the Bhavesh Enterprises site: marketing, enquiry form, and admin
    - Run `npx prisma db seed` as part of your CI/CD pipeline (e.g., GitHub Actions, Vercel Build Step) with `ADMIN_PASSWORD` securely injected as a secret.
    - Or execute it from a secure bastion host / audited environment.
    - The seed script will strictly fail in production if `ADMIN_PASSWORD` is missing.
+
+5. **Supabase Storage Setup** (Required for file uploads):
+   1. Go to Supabase Dashboard → Storage
+   2. Click "New bucket"
+   3. Name it `enquiry-files`
+   4. Enable "Public bucket" (so files can be viewed/downloaded from admin dashboard)
+   5. Click "Create bucket"
+   6. Go to Settings → API → Copy the `service_role` key (keep this secret!)
+   7. Add `SUPABASE_SERVICE_ROLE_KEY` to your environment variables
 
 ## Scripts
 

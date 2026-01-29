@@ -1,36 +1,18 @@
 import { NextResponse } from "next/server"
-import { createClient } from "@supabase/supabase-js"
+import { supabaseAdmin } from "@/lib/supabase"
 import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from "@/lib/rate-limit"
-
-// Create Supabase client for storage
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
-
-const supabase = createClient(supabaseUrl, supabaseServiceKey, {
-    auth: {
-        autoRefreshToken: false,
-        persistSession: false
-    }
-})
 
 const BUCKET_NAME = 'enquiry-files'
 
 export async function POST(req: Request) {
     try {
-        // Rate limiting to prevent abuse
         const clientId = getClientIdentifier(req)
-        const rateLimitResult = checkRateLimit(`upload:${clientId}`, RATE_LIMITS.UPLOAD)
+        const limit = checkRateLimit(`upload:${clientId}`, RATE_LIMITS.UPLOAD)
 
-        if (!rateLimitResult.allowed) {
+        if (!limit.allowed) {
             return NextResponse.json(
                 { error: "Too many upload requests. Please try again later." },
-                {
-                    status: 429,
-                    headers: {
-                        'Retry-After': String(Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)),
-                        'X-RateLimit-Remaining': '0',
-                    }
-                }
+                { status: 429, headers: { 'Retry-After': String(Math.ceil((limit.resetTime - Date.now()) / 1000)) } }
             )
         }
 
@@ -38,61 +20,46 @@ export async function POST(req: Request) {
         const file = formData.get("file")
 
         if (!file || !(file instanceof File)) {
-            return NextResponse.json({ error: "Invalid file upload" }, { status: 400 })
+            return NextResponse.json({ error: "Invalid file" }, { status: 400 })
         }
 
-        // Validate file type
-        const allowedTypes = ['application/pdf', 'image/jpeg', 'image/png'];
-        const isAllowedExtension = /\.(pdf|jpe?g|png|dwg|dxf)$/i.test(file.name);
-
-        if (!allowedTypes.includes(file.type) && !isAllowedExtension) {
-            return NextResponse.json({ error: "File type not allowed" }, { status: 415 })
+        // Validation
+        const allowedExtensions = /\.(pdf|jpe?g|png|dwg|dxf)$/i
+        if (!allowedExtensions.test(file.name)) {
+            return NextResponse.json({ error: "File type not supported" }, { status: 415 })
         }
 
-        // Enforce max size (10MB)
-        const MAX_SIZE = 10 * 1024 * 1024;
-        if (file.size > MAX_SIZE) {
-            return NextResponse.json({ error: "File too large (max 10MB)" }, { status: 413 })
+        if (file.size > 10 * 1024 * 1024) {
+            return NextResponse.json({ error: "File exceeds 10MB limit" }, { status: 413 })
         }
 
-        // Sanitize filename
-        const sanitizedFilename = file.name.replace(/[^a-zA-Z0-9.-]/g, '_').substring(0, 100);
-        const uniqueSuffix = Date.now() + '-' + Math.round(Math.random() * 1E9)
-        const filename = `${uniqueSuffix}-${sanitizedFilename}`
-        const filePath = `uploads/${filename}`
+        // Human-friendly storage path
+        const timestamp = Date.now()
+        const safeName = file.name.replace(/[^a-zA-Z0-9.-]/g, '_')
+        const filePath = `entries/${timestamp}-${safeName}`
 
-        // Convert file to buffer for Supabase upload
-        const arrayBuffer = await file.arrayBuffer()
-        const buffer = Buffer.from(arrayBuffer)
+        const buffer = Buffer.from(await file.arrayBuffer())
 
-        // Upload to Supabase Storage
-        const { data, error } = await supabase.storage
+        const { data, error } = await supabaseAdmin.storage
             .from(BUCKET_NAME)
             .upload(filePath, buffer, {
                 contentType: file.type || 'application/octet-stream',
-                upsert: false
+                cacheControl: '3600'
             })
 
-        if (error) {
-            console.error("Supabase storage error:", error)
-            return NextResponse.json({
-                error: "Upload failed",
-                details: error.message
-            }, { status: 500 })
-        }
+        if (error) throw error
 
-        // Get public URL for the uploaded file
-        const { data: urlData } = supabase.storage
+        const { data: { publicUrl } } = supabaseAdmin.storage
             .from(BUCKET_NAME)
             .getPublicUrl(filePath)
 
         return NextResponse.json({
-            url: urlData.publicUrl,
-            filename: file.name,
+            url: publicUrl,
+            name: file.name,
             path: data.path
         })
     } catch (error) {
-        console.error("Upload error:", error)
+        console.error('[UPLOAD_ERROR]', error)
         return NextResponse.json({ error: "Upload failed" }, { status: 500 })
     }
 }

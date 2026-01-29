@@ -1,196 +1,111 @@
 import { NextResponse } from 'next/server'
 import { getServerSession } from 'next-auth'
-import { authOptions } from '@/app/api/auth/[...nextauth]/route'
+import { authOptions } from '@/lib/auth'
 import { prisma } from '@/lib/prisma'
-import { z } from 'zod'
-import crypto from 'crypto'
+import { enquirySchema } from '@/lib/validations/enquiry'
 import { checkRateLimit, getClientIdentifier, RATE_LIMITS } from '@/lib/rate-limit'
-
-// Validation schema to match client-side
-const enquirySchema = z.object({
-    name: z.string().min(1, "Name is required"),
-    phone: z.string().min(1, "Phone is required"),
-    email: z.string().email().optional().or(z.literal('')),
-    quantity: z.string().optional(),
-    description: z.string().min(1, "Description is required"),
-    requirementType: z.string().optional(),
-    files: z.array(z.string()).optional(),
-    fileNames: z.array(z.string()).optional(),
-    fileUrls: z.array(z.string()).optional(),
-})
+import crypto from 'crypto'
 
 export async function POST(req: Request) {
     try {
-        // Rate limiting to prevent spam submissions
         const clientId = getClientIdentifier(req)
-        const rateLimitResult = checkRateLimit(`enquiry:${clientId}`, RATE_LIMITS.FORM)
+        const limit = checkRateLimit(`enquiry:${clientId}`, RATE_LIMITS.FORM)
 
-        if (!rateLimitResult.allowed) {
+        if (!limit.allowed) {
             return NextResponse.json(
                 { error: "Too many submissions. Please wait before trying again." },
-                {
-                    status: 429,
-                    headers: {
-                        'Retry-After': String(Math.ceil((rateLimitResult.resetTime - Date.now()) / 1000)),
-                    }
-                }
+                { status: 429, headers: { 'Retry-After': String(Math.ceil((limit.resetTime - Date.now()) / 1000)) } }
             )
         }
 
         const body = await req.json()
+        const payload = enquirySchema.parse(body)
 
-        // Validate input
-        const validData = enquirySchema.parse(body)
+        // Generate a human-readable enquiry number
+        const generateRef = () => {
+            const date = new Date().toISOString().slice(2, 10).replace(/-/g, '')
+            const random = crypto.randomBytes(2).toString('hex').toUpperCase()
+            return `BE-${date}-${random}`
+        }
 
-        // Retry logic for unique Enquiry Number generation
-        let retries = 3;
-        let newEnquiry;
-
-        while (retries > 0) {
-            try {
-                // Generate robust unique ID instead of reliance on count
-                const timestamp = Date.now();
-                const randomHex = crypto.randomBytes(3).toString('hex').toUpperCase();
-                const enquiryNumber = `BE-${timestamp}-${randomHex}`;
-
-                const fileNames = validData.fileNames ?? validData.files ?? []
-                const fileUrls = validData.fileUrls ?? []
-
-                newEnquiry = await prisma.enquiry.create({
-                    data: {
-                        enquiryNumber,
-                        name: validData.name,
-                        phone: validData.phone,
-                        email: validData.email || null,
-                        quantity: validData.quantity || null,
-                        description: validData.description,
-                        requirementType: validData.requirementType || "Custom Manufacturing",
-                        fileNames: JSON.stringify(fileNames),
-                        fileUrls: JSON.stringify(fileUrls),
-                        status: 'NEW'
-                    }
-                });
-                break; // Success
-            } catch (e) {
-                if (e && typeof e === 'object' && 'code' in e && e.code === 'P2002') { // Unique constraint violation
-                    retries--;
-                    continue;
-                }
-                throw e;
+        const enquiry = await prisma.enquiry.create({
+            data: {
+                enquiryNumber: generateRef(),
+                name: payload.name,
+                phone: payload.phone,
+                email: payload.email || null,
+                quantity: payload.quantity || null,
+                description: payload.description,
+                requirementType: payload.requirementType,
+                fileNames: JSON.stringify(payload.fileNames || []),
+                fileUrls: JSON.stringify(payload.fileUrls || []),
+                status: 'NEW'
             }
+        })
+
+        return NextResponse.json({ success: true, ref: enquiry.enquiryNumber })
+    } catch (error: any) {
+        console.error('[ENQUIRY_POST]', error)
+        if (error.name === 'ZodError') {
+            return NextResponse.json({ error: 'Validation failed', issues: error.issues }, { status: 400 })
         }
-
-        if (!newEnquiry) throw new Error("Failed to generate unique Enquiry ID after retries");
-
-        return NextResponse.json({ success: true, id: newEnquiry.id, number: newEnquiry.enquiryNumber })
-
-    } catch (error) {
-        console.error('Enquiry API Error:', error)
-        if (error instanceof z.ZodError) {
-            return NextResponse.json({ error: 'Validation failed', details: error.issues }, { status: 400 })
-        }
-        return NextResponse.json({ error: 'Failed to save enquiry' }, { status: 500 })
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }
 
 export async function GET() {
     try {
         const session = await getServerSession(authOptions)
-        if (!session) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-        }
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
+
         const enquiries = await prisma.enquiry.findMany({
             orderBy: { createdAt: 'desc' }
         })
-        const safeEnquiries = enquiries.map(e => {
-            let fileNames: string[] = [];
-            let fileUrls: string[] = [];
-            try {
-                const fnRaw = e.fileNames;
-                fileNames = Array.isArray(fnRaw) ? fnRaw : JSON.parse(String(fnRaw || '[]'));
-            } catch { fileNames = [] }
-            try {
-                const fuRaw = e.fileUrls;
-                fileUrls = Array.isArray(fuRaw) ? fuRaw : JSON.parse(String(fuRaw || '[]'));
-            } catch { fileUrls = [] }
 
-            return {
-                ...e,
-                fileNames,
-                fileUrls
-            }
-        })
-        return NextResponse.json(safeEnquiries)
+        const formatted = enquiries.map(e => ({
+            ...e,
+            fileNames: JSON.parse(String(e.fileNames || '[]')),
+            fileUrls: JSON.parse(String(e.fileUrls || '[]'))
+        }))
+
+        return NextResponse.json(formatted)
     } catch (error) {
-        console.error('Enquiry API Read Error:', error)
-        return NextResponse.json({ error: 'Enquiry API Read Error', details: error instanceof Error ? error.message : String(error) }, { status: 500 })
+        console.error('[ENQUIRY_GET]', error)
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }
 
 export async function PATCH(req: Request) {
     try {
         const session = await getServerSession(authOptions)
-        if (!session) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-        }
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-        const { id, status, internalNotes } = await req.json()
+        const { id, ...data } = await req.json()
+        if (!id) return NextResponse.json({ error: 'ID is required' }, { status: 400 })
 
-        if (!id) {
-            return NextResponse.json({ error: 'Missing ID' }, { status: 400 })
-        }
+        const updated = await prisma.enquiry.update({
+            where: { id },
+            data
+        })
 
-        // Validate status enum
-        const ALLOWED_STATUSES = ['NEW', 'IN_PROGRESS', 'UNDER_REVIEW', 'RESPONDED', 'COMPLETED'];
-        if (status && !ALLOWED_STATUSES.includes(status)) {
-            return NextResponse.json({ error: 'Invalid status' }, { status: 400 });
-        }
-
-        try {
-            const enquiry = await prisma.enquiry.update({
-                where: { id },
-                data: {
-                    ...(status && { status }),
-                    ...(internalNotes !== undefined && { internalNotes })
-                },
-            })
-            return NextResponse.json({ success: true, enquiry })
-        } catch (err: any) {
-            if (err.code === 'P2025') {
-                return NextResponse.json({ error: 'Enquiry not found' }, { status: 404 });
-            }
-            throw err;
-        }
+        return NextResponse.json(updated)
     } catch (error) {
-        console.error('Enquiry API Update Error:', error)
-        return NextResponse.json({ error: 'Failed to update enquiry' }, { status: 500 })
+        console.error('[ENQUIRY_PATCH]', error)
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }
 
 export async function DELETE(req: Request) {
     try {
         const session = await getServerSession(authOptions)
-        if (!session) {
-            return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
-        }
+        if (!session) return NextResponse.json({ error: 'Unauthorized' }, { status: 401 })
 
-        const body = await req.json()
-        const { id } = body
-
-        if (!id) {
-            return NextResponse.json({ error: 'Missing ID' }, { status: 400 })
-        }
-
-        await prisma.enquiry.delete({
-            where: { id }
-        })
+        const { id } = await req.json()
+        await prisma.enquiry.delete({ where: { id } })
 
         return NextResponse.json({ success: true })
-    } catch (error: any) {
-        console.error('Enquiry API Delete Error:', error)
-        if (error.code === 'P2025') {
-            return NextResponse.json({ error: 'Enquiry not found' }, { status: 404 })
-        }
-        return NextResponse.json({ error: 'Failed to delete' }, { status: 500 })
+    } catch (error) {
+        console.error('[ENQUIRY_DELETE]', error)
+        return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
     }
 }

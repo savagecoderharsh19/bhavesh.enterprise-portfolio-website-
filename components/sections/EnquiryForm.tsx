@@ -20,7 +20,6 @@ export function EnquiryForm() {
     const [submitSuccess, setSubmitSuccess] = useState(false)
     const [fileError, setFileError] = useState<string | null>(null)
 
-    // Move timeout to useEffect
     useEffect(() => {
         if (submitSuccess) {
             const timeout = setTimeout(() => setSubmitSuccess(false), 5000)
@@ -50,25 +49,25 @@ export function EnquiryForm() {
 
         fileRejections.forEach((rejection) => {
             const isCAD = /\.(dwg|dxf)$/i.test(rejection.file.name);
-            const isSizeOk = rejection.file.size <= 10 * 1024 * 1024;
+            const isSizeExceeded = rejection.file.size > 10 * 1024 * 1024;
 
-            if (isCAD && isSizeOk) {
+            if (isCAD && !isSizeExceeded) {
                 manuallyAccepted.push(rejection.file);
             } else {
-                const error = rejection.errors[0]?.code === 'file-too-large'
-                    ? "File is too large (max 10MB)"
-                    : "Invalid file type. Only PDF, Images, and CAD files are allowed.";
-                alert(`${rejection.file.name}: ${error}`);
+                const message = isSizeExceeded
+                    ? "File exceeds 10MB limit"
+                    : "Unsupported file type. Please use PDF, Images, or CAD formats.";
+                alert(`${rejection.file.name}: ${message}`);
             }
         });
 
-        const allNewFiles = [...acceptedFiles, ...manuallyAccepted];
+        const newFiles = [...acceptedFiles, ...manuallyAccepted];
 
-        if (allNewFiles.length > 0) {
+        if (newFiles.length > 0) {
             setUploadedFiles(prev => {
-                const newFiles = allNewFiles.map(f => ({ id: Math.random().toString(36).substring(2, 11), file: f }));
-                const next = [...prev, ...newFiles];
-                setValue("files", next.map(nf => nf.file));
+                const mapped = newFiles.map(f => ({ id: Math.random().toString(36).substring(7), file: f }));
+                const next = [...prev, ...mapped];
+                setValue("files" as any, next.map(nf => nf.file));
                 return next;
             });
         }
@@ -86,60 +85,53 @@ export function EnquiryForm() {
     const removeFile = (id: string) => {
         setUploadedFiles(prev => {
             const next = prev.filter(f => f.id !== id);
-            setValue("files", next.map(nf => nf.file));
+            setValue("files" as any, next.map(nf => nf.file));
             return next;
         })
     }
 
-    async function onSubmit(data: EnquiryFormValues) {
+    async function onSubmit(data: any) {
         setIsSubmitting(true)
 
         try {
             const fileNames: string[] = []
             const fileUrls: string[] = []
 
-            for (const { file: f } of uploadedFiles) {
-                try {
-                    const fd = new FormData()
-                    fd.append("file", f)
-                    const up = await fetch("/api/upload", { method: "POST", body: fd })
-                    const j = await up.json()
+            for (const { file } of uploadedFiles) {
+                const fd = new FormData()
+                fd.append("file", file)
 
-                    if (up.ok && j?.url) {
-                        fileNames.push(f.name)
-                        fileUrls.push(j.url)
-                    } else {
-                        console.error("Upload failed for file:", f.name, j?.error);
-                        alert(`Failed to upload ${f.name}: ${j?.error || 'Unknown error'}`);
-                        return; // Abort whole submission on error to keep names/urls in sync
-                    }
-                } catch (error) {
-                    console.error("Upload error for file:", f.name, error);
-                    alert(`System error uploading ${f.name}`);
-                    return; // Abort
+                const res = await fetch("/api/upload", { method: "POST", body: fd })
+                const json = await res.json()
+
+                if (!res.ok || !json.url) {
+                    throw new Error(json.error || `Failed to upload ${file.name}`)
                 }
+
+                fileNames.push(file.name)
+                fileUrls.push(json.url)
             }
 
-            const { files: _files, ...rest } = data
-            const body = { ...rest, fileNames, fileUrls }
+            const { files, ...rest } = data
+            const payload = { ...rest, fileNames, fileUrls }
 
-            const response = await fetch("/api/enquiries", {
+            const res = await fetch("/api/enquiries", {
                 method: "POST",
                 headers: { "Content-Type": "application/json" },
-                body: JSON.stringify(body),
+                body: JSON.stringify(payload),
             })
 
-            if (!response.ok) {
-                const err = await response.json().catch(() => ({}))
-                throw new Error(err?.error ?? "Submission failed")
+            if (!res.ok) {
+                const err = await res.json().catch(() => ({}))
+                throw new Error(err.error || "Submission failed")
             }
 
             setSubmitSuccess(true)
             reset()
             setUploadedFiles([])
-        } catch (error) {
-            console.error("Submission error:", error)
-            alert(error instanceof Error ? error.message : "Failed to submit enquiry. Please try again.")
+        } catch (error: any) {
+            console.error('[ENQUIRY_SUBMIT]', error)
+            alert(error.message || "Failed to submit enquiry")
         } finally {
             setIsSubmitting(false)
         }

@@ -1,19 +1,22 @@
 import { createClient } from '@supabase/supabase-js'
 
-// Server-side Supabase client for storage operations
-// Uses service role key for full access to storage buckets
-const supabaseUrl = process.env.NEXT_PUBLIC_SUPABASE_URL!
-const supabaseServiceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
+const url = process.env.NEXT_PUBLIC_SUPABASE_URL!
+const serviceKey = process.env.SUPABASE_SERVICE_ROLE_KEY || process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 
-export const supabaseAdmin = createClient(supabaseUrl, supabaseServiceKey, {
+/**
+ * Admin client for server-side operations (Storage, etc.)
+ */
+export const supabaseAdmin = createClient(url, serviceKey, {
     auth: {
         autoRefreshToken: false,
         persistSession: false
     }
 })
 
-// Client-side Supabase client (uses anon key)
+/**
+ * Public client for client-side interactions
+ */
 export const supabase = createClient(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
+    url,
     process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!
 )

@@ -1,12 +1,16 @@
 {
-  "name": "bhaveshfinalwork",
-  "version": "0.1.0",
+  "name": "bhavesh-enterprises-platform",
+  "version": "1.0.0",
+  "description": "Enterprise engineering portfolio and enquiry management system",
+  "author": "Bhavesh Enterprises Team",
+  "license": "MIT",
   "private": true,
   "scripts": {
     "dev": "next dev",
     "build": "prisma generate && next build",
     "start": "next start",
-    "lint": "eslint"
+    "lint": "next lint",
+    "postinstall": "prisma generate"
   },
   "dependencies": {
     "@hookform/resolvers": "^5.2.2",

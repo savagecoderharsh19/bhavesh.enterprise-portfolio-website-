@@ -72,7 +72,7 @@ export function Hero() {
                     onClick={() => document.getElementById('enquiry')?.scrollIntoView({ behavior: 'smooth' })}
                     className="group relative bg-[#D97706] text-white px-12 py-5 rounded-[4px] text-[15px] font-black uppercase tracking-widest hover:bg-[#B45309] transition-all overflow-hidden shadow-[0_10px_30px_rgba(217,119,6,0.2)]"
                 >
-                    <span className="relative z-10">Initialize Requirement Submission</span>
+                    <span className="relative z-10">Submit Technical Enquiry</span>
                     <div className="absolute inset-0 bg-white/20 translate-x-[-100%] group-hover:translate-x-[100%] transition-transform duration-500 skew-x-[-20deg]" />
                 </button>
             </div>

@@ -1,40 +1,24 @@
-import { withAuth } from 'next-auth/middleware'
-import { NextResponse } from 'next/server'
+import { withAuth } from "next-auth/middleware"
 
-export default withAuth(
-    function middleware(req) {
-        // If user is authenticated, allow access
-        return NextResponse.next()
+export default withAuth({
+    callbacks: {
+        authorized: ({ token, req }) => {
+            const { pathname } = req.nextUrl
+
+            // Publicly accessible admin routes
+            if (pathname === "/admin/login") return true
+
+            // Protected admin routes require a valid token
+            if (pathname.startsWith("/admin")) return !!token
+
+            return true
+        },
     },
-    {
-        callbacks: {
-            authorized: ({ token, req }) => {
-                // Check if route is admin route
-                const isAdminRoute = req.nextUrl.pathname.startsWith('/admin')
-                const isLoginPage = req.nextUrl.pathname === '/admin/login'
-
-                // Allow access to login page without token
-                if (isLoginPage) {
-                    return true
-                }
-
-                // Require token for admin routes
-                if (isAdminRoute) {
-                    return !!token
-                }
-
-                // Allow all other routes
-                return true
-            },
-        },
-        pages: {
-            signIn: '/admin/login',
-        },
-    }
-)
+    pages: {
+        signIn: "/admin/login",
+    },
+})
 
 export const config = {
-    matcher: [
-        '/admin/:path*',
-    ],
+    matcher: ["/admin/:path*"],
 }

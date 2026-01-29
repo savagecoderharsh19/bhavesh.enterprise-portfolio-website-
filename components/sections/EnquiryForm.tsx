@@ -18,6 +18,7 @@ export function EnquiryForm() {
     const [isSubmitting, setIsSubmitting] = useState(false)
     const [uploadedFiles, setUploadedFiles] = useState<{ id: string; file: File }[]>([])
     const [submitSuccess, setSubmitSuccess] = useState(false)
+    const [submitError, setSubmitError] = useState<string | null>(null)
     const [fileError, setFileError] = useState<string | null>(null)
 
     useEffect(() => {
@@ -57,7 +58,7 @@ export function EnquiryForm() {
                 const message = isSizeExceeded
                     ? "File exceeds 10MB limit"
                     : "Unsupported file type. Please use PDF, Images, or CAD formats.";
-                alert(`${rejection.file.name}: ${message}`);
+                setFileError(`${rejection.file.name}: ${message}`);
             }
         });
 
@@ -131,7 +132,7 @@ export function EnquiryForm() {
             setUploadedFiles([])
         } catch (error: any) {
             console.error('[ENQUIRY_SUBMIT]', error)
-            alert(error.message || "Failed to submit enquiry")
+            setSubmitError(error.message || "Failed to submit enquiry")
         } finally {
             setIsSubmitting(false)
         }
@@ -222,6 +223,24 @@ export function EnquiryForm() {
                             </motion.div>
                         ) : (
                             <form onSubmit={handleSubmit(onSubmit)} className="space-y-6 bg-white/5 p-8 rounded-2xl border border-white/10 backdrop-blur-sm">
+                                {/* Error Banner */}
+                                {(submitError || fileError) && (
+                                    <div className="bg-red-500/10 border border-red-500/20 rounded-xl p-4 flex items-start gap-3">
+                                        <div className="h-5 w-5 rounded-full bg-red-500/20 flex items-center justify-center shrink-0 mt-0.5">
+                                            <X className="h-3 w-3 text-red-400" />
+                                        </div>
+                                        <div className="flex-1">
+                                            <p className="text-red-400 text-sm font-medium">{submitError || fileError}</p>
+                                            <button
+                                                type="button"
+                                                onClick={() => { setSubmitError(null); setFileError(null); }}
+                                                className="text-red-400/70 text-xs mt-1 hover:underline"
+                                            >
+                                                Dismiss
+                                            </button>
+                                        </div>
+                                    </div>
+                                )}
                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                     <div className="space-y-2">
                                         <label htmlFor="name" className="text-sm font-medium text-gray-300">Name *</label>

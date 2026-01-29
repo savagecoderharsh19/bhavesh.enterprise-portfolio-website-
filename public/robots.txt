@@ -6,5 +6,5 @@ Allow: /
 Disallow: /admin/
 Disallow: /api/
 
-# Sitemap location
-Sitemap: https://bhaveshenterprises.com/sitemap.xml
+# Sitemap is dynamically generated
+Sitemap: /sitemap.xml

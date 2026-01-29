@@ -14,7 +14,8 @@ import {
     FileText,
     Trash2,
     Moon,
-    Sun
+    Sun,
+    X
 } from "lucide-react"
 import { BrandMark } from "@/components/ui/BrandMark"
 import { Button } from "@/components/ui/button"
@@ -69,6 +70,7 @@ export default function AdminDashboard() {
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState<string>("ALL")
     const [updatingId, setUpdatingId] = useState<string | null>(null)
+    const [error, setError] = useState<string | null>(null)
     const { theme, setTheme } = useTheme()
     const [mounted, setMounted] = useState(false)
 
@@ -101,7 +103,7 @@ export default function AdminDashboard() {
             }
         } catch (error) {
             console.error("Failed to fetch enquiries", error)
-            alert(error instanceof Error ? error.message : "Failed to fetch enquiries")
+            setError(error instanceof Error ? error.message : "Failed to fetch enquiries")
         } finally {
             setIsLoading(false)
         }
@@ -119,11 +121,11 @@ export default function AdminDashboard() {
                 setEnquiries(prev => prev.map(e => e.id === id ? { ...e, status: newStatus } : e))
             } else {
                 const errorData = await res.json().catch(() => ({}))
-                alert(`Failed to update status: ${errorData.error || res.statusText}`)
+                setError(`Failed to update status: ${errorData.error || res.statusText}`)
             }
         } catch (error) {
             console.error("Failed to update status", error)
-            alert("An error occurred while updating status.")
+            setError("An error occurred while updating status.")
         } finally {
             setUpdatingId(null)
         }
@@ -151,11 +153,11 @@ export default function AdminDashboard() {
                 setEnquiries(prev => prev.filter(e => e.id !== id))
             } else {
                 const errorData = await res.json().catch(() => ({}))
-                alert(`Failed to delete: ${errorData.error || res.statusText}`)
+                setError(`Failed to delete: ${errorData.error || res.statusText}`)
             }
         } catch (error) {
             console.error("Delete error:", error)
-            alert("An error occurred while deleting.")
+            setError("An error occurred while deleting.")
         } finally {
             setUpdatingId(null)
         }
@@ -243,6 +245,19 @@ export default function AdminDashboard() {
 
             {/* Main Content */}
             <main className="flex-1 max-w-[1600px] w-full mx-auto px-6 py-8">
+                {/* Error Banner */}
+                {error && (
+                    <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-xl p-4 flex items-center gap-3">
+                        <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
+                        <p className="flex-1 text-red-700 dark:text-red-300 text-sm font-medium">{error}</p>
+                        <button
+                            onClick={() => setError(null)}
+                            className="text-red-400 hover:text-red-600 dark:hover:text-red-200"
+                        >
+                            <X className="h-4 w-4" />
+                        </button>
+                    </div>
+                )}
                 {/* Filters Row */}
                 <div className="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
                     <div className="flex items-center gap-3 w-full md:w-auto">

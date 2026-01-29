@@ -62,10 +62,22 @@ export async function GET() {
             orderBy: { createdAt: 'desc' }
         })
 
+        // Safe JSON parsing helper
+        const safeParseJson = (value: any): string[] => {
+            if (Array.isArray(value)) return value
+            if (!value) return []
+            try {
+                const parsed = JSON.parse(String(value))
+                return Array.isArray(parsed) ? parsed : []
+            } catch {
+                return []
+            }
+        }
+
         const formatted = enquiries.map(e => ({
             ...e,
-            fileNames: JSON.parse(String(e.fileNames || '[]')),
-            fileUrls: JSON.parse(String(e.fileUrls || '[]'))
+            fileNames: safeParseJson(e.fileNames),
+            fileUrls: safeParseJson(e.fileUrls)
         }))
 
         return NextResponse.json(formatted)

@@ -1,246 +1,99 @@
-# Bhavesh Enterprises
+# Bhavesh Enterprises | Industrial Portal
 
-[![Next.js](https://img.shields.io/badge/Next.js-16.1.6-black?logo=next.js)](https://nextjs.org/)
-[![TypeScript](https://img.shields.io/badge/TypeScript-5.x-blue?logo=typescript)](https://www.typescriptlang.org/)
-[![Prisma](https://img.shields.io/badge/Prisma-5.22-2D3748?logo=prisma)](https://www.prisma.io/)
-[![Supabase](https://img.shields.io/badge/Supabase-PostgreSQL-3ECF8E?logo=supabase)](https://supabase.com/)
-[![License](https://img.shields.io/badge/License-Proprietary-red)]()
-
-> **Enterprise-grade portfolio and lead generation platform** for Bhavesh Enterprises — featuring a premium marketing website, secure enquiry management system, and protected admin dashboard.
+A high-performance, secure engineering portal designed for Bhavesh Enterprises. This platform serves as a multi-functional bridge between industrial clients and sourcing teams, featuring a premium marketing interface and a robust administration backend.
 
 ---
 
-## 🏗️ Tech Stack
+## ⚡ Core Concept
 
-| Layer | Technology |
-|-------|------------|
-| **Framework** | Next.js 16.1.6 (App Router) |
-| **Language** | TypeScript 5.x |
-| **Database** | PostgreSQL (Supabase) |
-| **ORM** | Prisma 5.22 |
-| **Authentication** | NextAuth.js (JWT Sessions) |
-| **File Storage** | Supabase Storage |
-| **Styling** | Tailwind CSS + Custom Design System |
-| **Deployment** | Vercel |
+The portal is built to handle complex industrial enquiries with ease. It combines a high-luxury, industrial-grade brand aesthetic with specialized engineering tools like secure CAD file handling, automated technical exports, and real-time requirement tracking.
+
+### Key Capabilities
+- **Technical Enquiry System**: Managed form submission with support for large file attachments (PDF, CAD, Images).
+- **Admin Command Center**: A protected dashboard for the team to manage, review, and progress customer requirements.
+- **Industrial Design System**: Premium "glassmorphism" UI tailored for the engineering industry.
+- **Smart Data Export**: Direct-to-Excel and TSV clipboard synchronization for engineering workflows.
 
 ---
 
-## 🔒 Security Features
+## 🛠 Technical Foundation
 
-This application implements industry-standard security practices:
+We chose a modern, type-safe stack to ensure long-term stability and security.
 
-### Authentication & Authorization
-- ✅ **JWT-based sessions** via NextAuth.js
-- ✅ **Role-based access control (RBAC)** — Admin-only dashboard
-- ✅ **Secure password hashing** using bcryptjs
-- ✅ **Protected routes** via Next.js middleware
+- **Frontend**: Next.js 15 (App Router) for speed and SEO.
+- **Auth**: NextAuth.js with JWT-based session security.
+- **Database**: PostgreSQL via Supabase for enterprise-grade data persistence.
+- **ORM**: Prisma for a type-safe database interface.
+- **Storage**: Supabase Storage buckets for secure technical drawing management.
+- **Styling**: Tailwind CSS with custom industrial design tokens.
 
-### Input Validation & Sanitization
-- ✅ **Zod schema validation** on all API endpoints
-- ✅ **Prisma ORM** — Parameterized queries (SQL injection prevention)
-- ✅ **File upload validation** — Type, extension, and size restrictions (10MB limit)
-- ✅ **Filename sanitization** — Prevents path traversal attacks
-
-### Rate Limiting
-- ✅ **Form submissions**: 5 requests/minute per IP
-- ✅ **File uploads**: 10 requests/minute per IP
-- ✅ **429 responses** with `Retry-After` headers
-
-### Security Headers
-- ✅ `X-Frame-Options: DENY` — Clickjacking protection
-- ✅ `X-Content-Type-Options: nosniff` — MIME sniffing prevention
-- ✅ `X-XSS-Protection: 1; mode=block` — XSS filter
-- ✅ `Referrer-Policy: strict-origin-when-cross-origin`
-- ✅ `Permissions-Policy` — Camera, microphone, geolocation disabled
-- ✅ `X-Powered-By` header disabled
-
-### Data Protection
-- ✅ **Environment variables** excluded from version control
-- ✅ **Row Level Security (RLS)** policies for Supabase
-- ✅ **CSV injection prevention** in data exports
-- ✅ **No sensitive data in client bundles**
+### Security Architecture
+Security wasn't an afterthought—it's built into every layer.
+- **Access Control**: Strict RBAC (Role Based Access Control) and Middleware protection.
+- **Rate Limiting**: Automated IP-based protection for form spam and file abuse.
+- **Input Integrity**: Full Zod schema validation across the entire request pipeline.
+- **Hardened Headers**: Pre-configured security headers (CSP, HSTS, X-Frame-Options).
 
 ---
 
-## 🚀 Getting Started
+## 🚀 Development Setup
 
-### Prerequisites
-
-- Node.js 18.x or later
-- npm 9.x or later
-- PostgreSQL database (Supabase recommended)
-
-### 1. Clone & Install
-
-```bash
-git clone https://github.com/savagecoderharsh19/bhavesh.enterprise-portfolio-website-.git
-cd bhavesh.enterprise-portfolio-website-
-npm install
-```
-
-### 2. Configure Environment Variables
+### 1. Environment Configuration
+Clone the repository and install dependencies using `npm install`. You'll need to create a `.env` file based on the template:
 
 ```bash
 cp .env.example .env
 ```
 
-Edit `.env` with your credentials:
+**Key Credentials Required:**
+- `DATABASE_URL`: Your Supabase Postgres connection string.
+- `NEXT_PUBLIC_SUPABASE_URL` / `ANON_KEY`: Project identification.
+- `SUPABASE_SERVICE_ROLE_KEY`: Required for server-side storage management.
+- `NEXTAUTH_SECRET`: Generate a strong key using `openssl rand -base64 32`.
 
-| Variable | Description | Required |
-|----------|-------------|----------|
-| `DATABASE_URL` | PostgreSQL connection string | ✅ |
-| `NEXT_PUBLIC_SUPABASE_URL` | Supabase project URL | ✅ |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon/public key | ✅ |
-| `SUPABASE_SERVICE_ROLE_KEY` | Service role key (for file uploads) | ✅ |
-| `NEXTAUTH_SECRET` | Session encryption key | ✅ |
-| `NEXTAUTH_URL` | Application URL | ✅ |
-| `ADMIN_PASSWORD` | Initial admin password | ✅ (Production) |
-
-> ⚠️ **Security Note**: Generate secrets using cryptographically secure methods:
-> ```bash
-> openssl rand -base64 32  # For NEXTAUTH_SECRET
-> ```
-
-### 3. Database Setup
+### 2. Database & Admin Setup
+Sync your schema and create the primary administrator:
 
 ```bash
-# Run migrations
+# Push schema to db
 npx prisma migrate deploy
 
-# Seed admin user
+# Seed initial admin (requires ADMIN_PASSWORD in .env)
 npx prisma db seed
 ```
 
-**Admin Credentials**:
-- Email: `admin@bhaveshenterprises.com`
-- Password: Set via `ADMIN_PASSWORD` environment variable
-
-### 4. Supabase Storage Setup
-
-1. Go to **Supabase Dashboard** → **Storage**
-2. Create bucket: `enquiry-files`
-3. Enable **Public bucket** option
-4. Copy **service_role** key from Settings → API
-
-### 5. Run Development Server
-
-```bash
-npm run dev
-```
-
-Open [http://localhost:3000](http://localhost:3000)
+### 3. Storage Preparation
+You must create a bucket named `enquiry-files` in your Supabase storage dashboard. Ensure it's set to **Public** for public form submissions to work correctly.
 
 ---
 
-## 🌐 Production Deployment (Vercel)
+## 📂 Internal Structure
 
-### Step 1: Configure Environment Variables
-
-Set the following in **Vercel Dashboard** → **Settings** → **Environment Variables**:
-
-| Variable | Value |
-|----------|-------|
-| `DATABASE_URL` | Supabase connection string |
-| `NEXT_PUBLIC_SUPABASE_URL` | `https://[project].supabase.co` |
-| `NEXT_PUBLIC_SUPABASE_ANON_KEY` | Supabase anon key |
-| `SUPABASE_SERVICE_ROLE_KEY` | Supabase service role key |
-| `NEXTAUTH_SECRET` | `openssl rand -base64 32` |
-| `NEXTAUTH_URL` | `https://your-domain.com` |
-| `ADMIN_PASSWORD` | Strong password (16+ characters) |
-
-### Step 2: Deploy
-
-```bash
-git push origin main
-```
-
-Vercel will automatically:
-1. Run `prisma generate`
-2. Build the Next.js application
-3. Deploy to production
-
-### Step 3: Post-Deployment
-
-```bash
-# Run migrations against production database
-npx prisma migrate deploy
-```
-
-> ⚠️ **Security Warning**: Never run database seeding from local machines against production. Use CI/CD pipelines with secrets management.
-
-### Step 4: Apply Row Level Security
-
-Execute the SQL in `prisma/rls-policies.sql` via **Supabase Dashboard** → **SQL Editor**.
+- `app/(public)`: Marketing sections and public lead generation.
+- `app/admin`: Secure administrative interface and dashboard.
+- `app/api`: Server-side logic and third-party integrations.
+- `lib/`: Centralized utilities (rate limiting, auth, db clients).
+- `prisma/`: Database schema definitions and migration history.
 
 ---
 
-## 📁 Project Structure
+## 📦 Deployment
 
-```
-├── app/
-│   ├── (public)/           # Marketing pages
-│   ├── admin/              # Protected admin dashboard
-│   └── api/                # API routes
-├── components/
-│   ├── sections/           # Page sections
-│   └── ui/                 # Reusable UI components
-├── lib/
-│   ├── prisma.ts           # Database client
-│   ├── rate-limit.ts       # Rate limiting utility
-│   └── supabase.ts         # Storage client
-├── prisma/
-│   ├── schema.prisma       # Database schema
-│   └── rls-policies.sql    # Row Level Security
-└── middleware.ts           # Auth middleware
-```
+The project is optimized for **Vercel**. 
+1. Connect your GitHub repository.
+2. Link your environment variables.
+3. Apply Row Level Security policies using `prisma/rls-policies.sql` in the Supabase SQL editor.
+
+### Pre-Launch Checklist
+- [ ] Verify `NEXTAUTH_URL` matches your production domain.
+- [ ] Ensure `ADMIN_PASSWORD` is unique and strong.
+- [ ] Confirm storage bucket permissions are active.
+- [ ] Run `npm build` locally to verify production parity.
 
 ---
 
-## 🛠️ Available Scripts
+## 🤝 Support & Security
 
-| Script | Description |
-|--------|-------------|
-| `npm run dev` | Start development server |
-| `npm run build` | Build for production |
-| `npm run start` | Start production server |
-| `npm run lint` | Run ESLint |
-| `npx prisma studio` | Open database GUI |
+For support or bug reporting, reach out to the technical team at `admin@bhaveshenterprises.com`. Security concerns should be handled via private channels as outlined in our `SECURITY.md`.
 
----
-
-## 🔐 Security Checklist (Pre-Production)
-
-Before deploying to production, ensure:
-
-- [ ] Strong `NEXTAUTH_SECRET` (32+ characters, randomly generated)
-- [ ] Strong `ADMIN_PASSWORD` (16+ characters, mixed case, numbers, symbols)
-- [ ] `SUPABASE_SERVICE_ROLE_KEY` is not exposed in client code
-- [ ] RLS policies applied in Supabase
-- [ ] Storage bucket configured with appropriate permissions
-- [ ] All environment variables set in Vercel
-- [ ] Domain configured with HTTPS
-- [ ] Regular security audits scheduled
-
----
-
-## 📄 License
-
-This project is proprietary software owned by Bhavesh Enterprises. All rights reserved.
-
----
-
-## 🤝 Support
-
-For technical support or security concerns, contact:
-- **Email**: admin@bhaveshenterprises.com
-- **Security Issues**: Report via private channels only
-
----
-
-<div align="center">
-
-**Built with ❤️ for Bhavesh Enterprises**
-
-*One-Stop Industrial Hub*
-
-</div>
+*© 2026 Bhavesh Enterprises. Industrial Engineering Excellence.*

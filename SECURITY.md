@@ -1,88 +1,46 @@
 # Security Policy
 
+At Bhavesh Enterprises, maintaining the integrity and security of our industrial portal is a top priority. This policy outlines our supported versions and how to report vulnerabilities properly.
+
 ## Supported Versions
 
-| Version | Supported          |
-|---------|--------------------|
-| 1.x.x   | ✅ Actively supported |
+We actively provide security updates for the following versions:
 
-## Reporting a Vulnerability
+| Version | Status |
+|---------|--------|
+| v1.x    | Supported |
 
-We take security seriously at Bhavesh Enterprises. If you discover a security vulnerability, please follow responsible disclosure practices.
+## Reporting Vulnerabilities
 
-### How to Report
+If you identify a potential security issue, please practice **Responsible Disclosure**. Avoid disclosing vulnerabilities in public issues or community forums.
 
-1. **Do NOT** create a public GitHub issue for security vulnerabilities
-2. Email security concerns to: **admin@bhaveshenterprises.com**
-3. Include:
-   - Description of the vulnerability
-   - Steps to reproduce
-   - Potential impact
-   - Suggested fix (if any)
+### Reporting Procedure
+- **Direct Contact**: Email concerns to `admin@bhaveshenterprises.com`.
+- **Details Needed**: Please include a clear description of the issue, steps to reproduce, and the potential impact on the system.
+- **Encrypted Communication**: If you require PGP/GPG communication, please request our public key in your initial email.
 
 ### What to Expect
-
-- **Acknowledgment**: Within 48 hours
-- **Initial Assessment**: Within 5 business days
-- **Resolution Timeline**: Depends on severity
-  - Critical: 24-48 hours
-  - High: 7 days
-  - Medium: 30 days
-  - Low: 90 days
-
-### Security Measures Implemented
-
-This application implements the following security controls:
-
-#### Authentication & Authorization
-- JWT-based session management via NextAuth.js
-- Role-based access control (RBAC)
-- Secure password hashing with bcryptjs
-- Protected admin routes via middleware
-
-#### Input Validation
-- Zod schema validation on all API endpoints
-- Prisma ORM for parameterized queries (SQL injection prevention)
-- File upload validation (type, extension, size)
-- Filename sanitization
-
-#### Rate Limiting
-- Form submissions: 5 requests/minute per IP
-- File uploads: 10 requests/minute per IP
-- Proper 429 responses with Retry-After headers
-
-#### Security Headers
-- X-Frame-Options: DENY
-- X-Content-Type-Options: nosniff
-- X-XSS-Protection: 1; mode=block
-- Referrer-Policy: strict-origin-when-cross-origin
-- Permissions-Policy (restricted)
-- X-Powered-By header disabled
-
-#### Data Protection
-- Environment variables excluded from VCS
-- Row Level Security (RLS) on database
-- CSV injection prevention in exports
-- No sensitive data in client bundles
-
-## Security Updates
-
-Security patches are released as soon as possible after verification. We recommend:
-
-1. Keep dependencies updated (`npm audit fix`)
-2. Monitor GitHub security advisories
-3. Enable Dependabot alerts on your fork
-4. Subscribe to Next.js security announcements
-
-## Third-Party Dependencies
-
-We regularly audit our dependencies using:
-- `npm audit`
-- GitHub Dependabot
-- Snyk (optional)
-
-Current status: **0 known vulnerabilities**
+Upon receiving your report, we will:
+1. **Acknowledge**: Respond to your initial report within 48 hours.
+2. **Review**: Perform a technical assessment within 5 business days.
+3. **Resolve**: Prioritize a patch based on the criticality of the bug. We aim for a 24-48 hour resolution for critical issues.
 
 ---
+
+## Technical Safeguards
+
+The platform is designed with a multi-layered security strategy:
+
+- **Identity Management**: Secure JWT sessions via NextAuth.js with Bcrypt hashing for password storage.
+- **Traffic Control**: Integrated rate limiting at the infrastructure level to prevent brute-force and resource exhaustion.
+- **Request Integrity**: Mandatory Zod schema validation for all incoming API payloads.
+- **Database Security**: Prisma-managed queries to prevent SQL injection and Supabase Row Level Security (RLS) for data isolation.
+- **Storage Security**: Filename sanitization and extension whitelisting to prevent malicious file execution.
+
+---
+
+## Professional Standards
+
+We routinely sweep our codebase for vulnerabilities using `npm audit` and automated dependency tracking. We recommend keeping your fork/deployment updated with the latest security patches from the `main` branch.
 
 *Last updated: January 2026*

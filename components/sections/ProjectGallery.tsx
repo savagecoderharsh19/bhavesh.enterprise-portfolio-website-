@@ -1,6 +1,6 @@
 "use client"
 
-import { useState } from "react"
+import { useState, useEffect } from "react"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { X, ZoomIn } from "lucide-react"
@@ -21,6 +21,26 @@ const projects = [
 
 export function ProjectGallery() {
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
+
+    // Handle ESC key and scroll lock
+    useEffect(() => {
+        const handleKeyDown = (e: KeyboardEvent) => {
+            if (e.key === "Escape") setSelectedImage(null)
+        }
+
+        if (selectedImage) {
+            window.addEventListener("keydown", handleKeyDown)
+            document.body.style.overflow = "hidden"
+        } else {
+            window.removeEventListener("keydown", handleKeyDown)
+            document.body.style.overflow = "unset"
+        }
+
+        return () => {
+            window.removeEventListener("keydown", handleKeyDown)
+            document.body.style.overflow = "unset"
+        }
+    }, [selectedImage])
 
     return (
         <section className="py-24 bg-white">
@@ -82,17 +102,21 @@ export function ProjectGallery() {
                         animate={{ opacity: 1 }}
                         exit={{ opacity: 0 }}
                         onClick={() => setSelectedImage(null)}
-                        className="fixed inset-0 z-50 bg-black/95 backdrop-blur-sm flex items-center justify-center p-4"
+                        className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 md:p-10"
                     >
+                        {/* Close Button Inside the Fixed Container */}
                         <motion.button
-                            initial={{ opacity: 0, rotate: -90 }}
-                            animate={{ opacity: 1, rotate: 0 }}
-                            onClick={() => setSelectedImage(null)}
-                            className="absolute top-6 right-6 z-[60] text-white/50 hover:text-white transition-colors cursor-pointer"
+                            initial={{ opacity: 0, scale: 0.5 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            transition={{ delay: 0.2 }}
+                            onClick={(e) => {
+                                e.stopPropagation();
+                                setSelectedImage(null);
+                            }}
+                            className="fixed top-6 right-6 z-[110] p-4 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
                             aria-label="Close Gallery"
-                            type="button"
                         >
-                            <X className="w-10 h-10" />
+                            <X className="w-8 h-8 md:w-10 md:h-10" />
                         </motion.button>
 
                         <motion.div
@@ -100,7 +124,7 @@ export function ProjectGallery() {
                             animate={{ scale: 1, opacity: 1 }}
                             exit={{ scale: 0.9, opacity: 0 }}
                             onClick={(e) => e.stopPropagation()}
-                            className="relative max-w-5xl w-full h-full max-h-[85vh] flex items-center justify-center"
+                            className="relative max-w-7xl w-full h-full flex items-center justify-center"
                         >
                             <Image
                                 src={selectedImage}
@@ -108,6 +132,7 @@ export function ProjectGallery() {
                                 fill
                                 className="object-contain"
                                 quality={100}
+                                priority
                             />
                         </motion.div>
                     </motion.div>

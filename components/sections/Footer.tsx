@@ -44,6 +44,12 @@ export function Footer() {
                                 <h5 className="text-[11px] font-black text-[#D97706] uppercase tracking-wider mb-2">Industrial Rubber</h5>
                                 <p className="text-[12px] text-gray-500 font-medium">Nitrile, Silicone, Viton, Neoprene, Fabric Bonded</p>
                             </div>
+                            <div>
+                                <h5 className="text-[11px] font-black text-[#D97706] uppercase tracking-wider mb-2">Engineering Hardware Consumables</h5>
+                                <p className="text-[12px] text-gray-400 font-medium leading-relaxed">
+                                    Hand & Power Tools, Pumps & Valves, Safety PPE, Abrasives, Testing Instruments, Adhesive Sealant Tapes, Cutting Tools & Fasteners
+                                </p>
+                            </div>
                         </div>
                     </div>
 

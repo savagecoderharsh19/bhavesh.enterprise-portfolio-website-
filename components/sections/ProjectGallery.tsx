@@ -1,6 +1,7 @@
 "use client"
 
 import { useState, useEffect } from "react"
+import { createPortal } from "react-dom"
 import { motion, AnimatePresence } from "framer-motion"
 import Image from "next/image"
 import { X, ZoomIn } from "lucide-react"
@@ -21,6 +22,11 @@ const projects = [
 
 export function ProjectGallery() {
     const [selectedImage, setSelectedImage] = useState<string | null>(null)
+    const [mounted, setMounted] = useState(false)
+
+    useEffect(() => {
+        setMounted(true)
+    }, [])
 
     // Handle ESC key and scroll lock
     useEffect(() => {
@@ -94,50 +100,56 @@ export function ProjectGallery() {
                 </div>
             </div>
 
-            {/* Lightbox Modal */}
-            <AnimatePresence>
-                {selectedImage && (
-                    <motion.div
-                        initial={{ opacity: 0 }}
-                        animate={{ opacity: 1 }}
-                        exit={{ opacity: 0 }}
-                        onClick={() => setSelectedImage(null)}
-                        className="fixed inset-0 z-[100] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 md:p-10"
-                    >
-                        {/* Close Button Inside the Fixed Container */}
-                        <motion.button
-                            initial={{ opacity: 0, scale: 0.5 }}
-                            animate={{ opacity: 1, scale: 1 }}
-                            transition={{ delay: 0.2 }}
-                            onClick={(e) => {
-                                e.stopPropagation();
-                                setSelectedImage(null);
-                            }}
-                            className="fixed top-6 right-6 z-[110] p-4 text-white/70 hover:text-white hover:bg-white/10 rounded-full transition-all duration-300 cursor-pointer"
-                            aria-label="Close Gallery"
-                        >
-                            <X className="w-8 h-8 md:w-10 md:h-10" />
-                        </motion.button>
-
+            {/* Lightbox Modal using Portal to jump out of any stacking context */}
+            {mounted && createPortal(
+                <AnimatePresence>
+                    {selectedImage && (
                         <motion.div
-                            initial={{ scale: 0.9, opacity: 0 }}
-                            animate={{ scale: 1, opacity: 1 }}
-                            exit={{ scale: 0.9, opacity: 0 }}
-                            onClick={(e) => e.stopPropagation()}
-                            className="relative max-w-7xl w-full h-full flex items-center justify-center"
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            exit={{ opacity: 0 }}
+                            onClick={() => setSelectedImage(null)}
+                            className="fixed inset-0 z-[9999] bg-black/95 backdrop-blur-md flex items-center justify-center p-4 md:p-10"
+                            style={{ pointerEvents: 'auto' }}
                         >
-                            <Image
-                                src={selectedImage}
-                                alt="Gallery Preview"
-                                fill
-                                className="object-contain"
-                                quality={100}
-                                priority
-                            />
+                            {/* Close Button - Extreme high layer */}
+                            <motion.button
+                                initial={{ opacity: 0, scale: 0.5 }}
+                                animate={{ opacity: 1, scale: 1 }}
+                                transition={{ delay: 0.2 }}
+                                onClick={(e) => {
+                                    e.stopPropagation();
+                                    setSelectedImage(null);
+                                }}
+                                className="fixed top-8 right-8 z-[10000] p-4 text-white hover:text-white bg-white/10 hover:bg-[#D97706] rounded-full transition-all duration-300 pointer-events-auto cursor-pointer flex items-center justify-center shadow-2xl"
+                                aria-label="Close Gallery"
+                            >
+                                <X className="w-8 h-8 md:w-10 md:h-10" strokeWidth={3} />
+                            </motion.button>
+
+                            <motion.div
+                                initial={{ scale: 0.9, opacity: 0 }}
+                                animate={{ scale: 1, opacity: 1 }}
+                                exit={{ scale: 0.9, opacity: 0 }}
+                                onClick={(e) => e.stopPropagation()}
+                                className="relative max-w-7xl w-full h-full flex items-center justify-center"
+                            >
+                                <div className="relative w-full h-full flex items-center justify-center">
+                                    <Image
+                                        src={selectedImage}
+                                        alt="Gallery Preview"
+                                        fill
+                                        className="object-contain"
+                                        quality={100}
+                                        priority
+                                    />
+                                </div>
+                            </motion.div>
                         </motion.div>
-                    </motion.div>
-                )}
-            </AnimatePresence>
+                    )}
+                </AnimatePresence>,
+                document.body
+            )}
         </section>
     )
 }

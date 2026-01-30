@@ -5,7 +5,7 @@ import { useState } from "react"
 import Image from "next/image"
 
 const clients = [
-    { name: "Arcelor Mittal Nippon Steel Pvt Ltd", logo: "/clients/amns.png" },
+    { name: "Arcelor Mittal Nippon Steel Pvt Ltd", logo: "/clients/arcelormittal.svg" },
     { name: "Posco Maharashtra Steel India Pvt Ltd", logo: "/clients/posco.svg" },
     { name: "JSW Energy Ltd", logo: "/clients/jsw.svg" },
     { name: "Exide Industries Ltd", logo: "/clients/exide.svg" },

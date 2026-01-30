@@ -13,7 +13,7 @@ const clients = [
     { name: "L&T Defence", logo: "/clients/lnt.svg" },
     { name: "Adani", logo: "/clients/adani.svg" },
     { name: "Siemens", logo: "/clients/siemens.svg" },
-    { name: "Swan Defence", logo: "/clients/swan.svg" },
+    { name: "Swan Defence and Heavy Industries", logo: "/clients/swan_defence.webp" },
     { name: "Tally Solution", logo: "/clients/tally.png" },
 ]
 

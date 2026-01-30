@@ -58,6 +58,13 @@ const CustomIndustrialIcon = ({ type }: { type: string }) => {
                 <circle cx="50" cy="40" r="15" stroke="#D97706" strokeWidth="4" />
             </svg>
         ),
+        hardware: (
+            <svg viewBox="0 0 100 100" className="w-12 h-12">
+                <path d="M20 30 L40 30 M20 50 L40 50 M20 70 L40 70" stroke="currentColor" strokeWidth="4" strokeLinecap="round" />
+                <path d="M60 20 L80 40 M80 20 L60 40" stroke="#D97706" strokeWidth="4" strokeLinecap="round" />
+                <circle cx="70" cy="70" r="10" stroke="currentColor" strokeWidth="3" fill="none" />
+            </svg>
+        ),
         sourcing: (
             <svg viewBox="0 0 100 100" className="w-12 h-12">
                 <path d="M20 50 L50 20 L80 50 L50 80 Z" stroke="currentColor" strokeWidth="2" fill="none" />
@@ -182,6 +189,19 @@ const productCategories = [
             "Workshop Utility Essentials",
             "Any Specialized Sourcing Request"
         ]
+    },
+    {
+        title: "Hardware Consumables",
+        type: "hardware",
+        products: [
+            "Hand & Power Tools",
+            "Pumps & Valves",
+            "Safety PPE",
+            "Industrial Abrasives",
+            "Testing Instruments",
+            "Adhesive Sealant Tapes",
+            "Cutting Tools & Fasteners"
+        ]
     }
 ]
 
@@ -247,10 +267,10 @@ export function ProductPortfolio() {
                     <motion.div
                         className="flex"
                         animate={{
-                            x: [0, -1 * (productCategories.length * 432)]
+                            x: ["0%", "-50%"]
                         }}
                         transition={{
-                            duration: 40,
+                            duration: 50,
                             repeat: Infinity,
                             ease: "linear",
                         }}
@@ -301,6 +321,6 @@ export function ProductPortfolio() {
                     scrollbar-width: none;
                 }
             `}</style>
-        </section>
+        </section >
     )
 }

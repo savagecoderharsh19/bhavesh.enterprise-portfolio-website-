@@ -87,7 +87,10 @@ export function ProjectGallery() {
                         <motion.button
                             initial={{ opacity: 0, rotate: -90 }}
                             animate={{ opacity: 1, rotate: 0 }}
-                            className="absolute top-6 right-6 text-white/50 hover:text-white transition-colors"
+                            onClick={() => setSelectedImage(null)}
+                            className="absolute top-6 right-6 z-[60] text-white/50 hover:text-white transition-colors cursor-pointer"
+                            aria-label="Close Gallery"
+                            type="button"
                         >
                             <X className="w-10 h-10" />
                         </motion.button>

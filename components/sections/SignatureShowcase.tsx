@@ -36,7 +36,7 @@ export function SignatureShowcase() {
     const lineOpacity = useTransform(smoothProgress, [0.3, 0.4], [0, 0.5])
 
     return (
-        <section ref={containerRef} className="relative h-[300vh] bg-slate-950 overflow-clip transform-gpu">
+        <section ref={containerRef} className="relative h-[300vh] bg-gradient-to-b from-slate-950 via-[#050505] to-slate-950 overflow-clip transform-gpu">
             <div className="sticky top-0 h-screen w-full flex items-center justify-center overflow-hidden">
 
                 {/* Background Glow */}
@@ -56,7 +56,7 @@ export function SignatureShowcase() {
                     className="relative flex items-center justify-center"
                 >
                     {/* Core Hub */}
-                    <div className="relative z-20 w-32 h-32 bg-slate-900 rounded-2xl shadow-2xl flex items-center justify-center transform-gpu border border-white/10">
+                    <div className="relative z-20 w-32 h-32 bg-[#0a0a0a] rounded-2xl shadow-2xl flex items-center justify-center transform-gpu border border-white/10">
                         <BrandMark className="w-20 h-20" />
                         <div className="absolute inset-0 border-4 border-amber-500/20 rounded-2xl animate-pulse" />
                     </div>

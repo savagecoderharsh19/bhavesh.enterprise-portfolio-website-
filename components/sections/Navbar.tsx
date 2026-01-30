@@ -105,10 +105,7 @@ export function Navbar() {
                         className="fixed inset-0 z-[60] bg-slate-950/95 backdrop-blur-2xl lg:hidden flex flex-col p-10"
                     >
                         <div className="flex justify-between items-center mb-8">
-                            <div className="flex items-center gap-3">
-                                <BrandMark className="w-8 h-8" />
-                                <span className="text-xl font-black tracking-tighter text-white">BHAVESH</span>
-                            </div>
+                            <BrandLogo className="w-32 h-auto" />
                             <button
                                 onClick={() => setIsMobileMenuOpen(false)}
                                 className="w-12 h-12 flex items-center justify-center rounded-full bg-white/5 border border-white/10 text-white"

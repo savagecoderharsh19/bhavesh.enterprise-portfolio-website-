@@ -2,7 +2,7 @@
 
 import Link from "next/link"
 import { MapPin, Phone, Mail } from "lucide-react"
-import { BrandMark } from "@/components/ui/BrandMark"
+import { BrandLogo } from "@/components/ui/BrandLogo"
 
 export function Footer() {
     return (
@@ -13,11 +13,7 @@ export function Footer() {
                     {/* Column 1: Core Mission */}
                     <div>
                         <div className="flex items-center gap-3 mb-6">
-                            <BrandMark className="w-12 h-12" />
-                            <div className="flex flex-col">
-                                <span className="text-xl font-black tracking-tighter text-white">BHAVESH</span>
-                                <span className="text-[10px] font-black tracking-[0.3em] text-[#D97706] uppercase">ENTERPRISES</span>
-                            </div>
+                            <BrandLogo className="w-40 h-auto" />
                         </div>
                         <p className="text-gray-400 text-[13px] leading-relaxed mb-6 font-medium">
                             Leading one-stop industrial hub and engineering consultant. We deliver integrated industrial solutions—from high-precision manufacturing to essential workshop requirements.

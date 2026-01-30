@@ -23,29 +23,27 @@ export function Hero() {
             <div className="relative z-10 container mx-auto px-4 flex flex-col items-center text-center max-w-[1000px]">
                 {/* Clean Mechanical Branding */}
                 <div className="flex flex-col items-center mb-10">
-                    <div className="relative w-28 h-28 flex items-center justify-center mb-6">
-                        {/* Static Subtle Glow Ring */}
-                        <div className="absolute inset-0 border border-white/5 rounded-full" />
+                    {/* Hero Logo - Glassmorphism Box */}
+                    <motion.div
+                        className="relative w-40 h-40 flex items-center justify-center mb-10"
+                        initial={{ opacity: 0, scale: 0.5 }}
+                        animate={{ opacity: 1, scale: 1 }}
+                        transition={{ duration: 0.8 }}
+                    >
+                        {/* Rotating Glow/Border */}
+                        <div className="absolute inset-0 rounded-3xl bg-gradient-to-tr from-amber-500/20 to-transparent opacity-50 blur-xl animate-pulse" />
 
-                        {/* Smooth Rotating Main Icon */}
-                        <motion.div
-                            animate={{
-                                rotateY: [0, 15, 0, -15, 0],
-                                rotateX: [0, -10, 0, 10, 0]
-                            }}
-                            transition={{
-                                rotateY: { duration: 5, repeat: Infinity, ease: "easeInOut" },
-                                rotateX: { duration: 7, repeat: Infinity, ease: "easeInOut" }
-                            }}
-                            className="relative z-10"
-                            style={{ transformStyle: "preserve-3d" }}
-                        >
-                            <BrandMark className="w-24 h-24" />
-                        </motion.div>
+                        {/* The Glass Box */}
+                        <div className="relative z-10 w-32 h-32 bg-slate-950/40 backdrop-blur-xl border border-white/10 rounded-3xl flex items-center justify-center shadow-[0_0_40px_rgba(0,0,0,0.5)]">
+                            {/* Inner Highlight */}
+                            <div className="absolute inset-0 rounded-3xl border border-white/5 mask-image-linear-gradient-to-b" />
 
-                        {/* Fixed Center Point */}
-                        <div className="absolute w-4 h-4 bg-white rounded-full z-20 shadow-[0_0_15px_rgba(217,119,6,0.5)] border-2 border-[#D97706]" />
-                    </div>
+                            {/* The Logo */}
+                            <BrandMark className="w-20 h-20 drop-shadow-[0_0_15px_rgba(217,119,6,0.3)]" />
+                        </div>
+
+                        {/* Decorational corners or brackets could go here if needed, but keeping it clean like the reference */}
+                    </motion.div>
                     <h2 className="text-4xl font-black text-white tracking-[0.05em] uppercase leading-none">
                         BHAVESH <span className="text-[#D97706]">ENTERPRISES</span>
                     </h2>

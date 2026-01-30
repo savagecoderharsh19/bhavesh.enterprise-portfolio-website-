@@ -5,14 +5,16 @@ import { useState } from "react"
 import Image from "next/image"
 
 const clients = [
-    { name: "Siemens", logo: "/clients/siemens.svg" },
-    { name: "Adani", logo: "/clients/adani.svg" },
-    { name: "Larsen & Toubro", logo: "/clients/lnt.svg" },
-    { name: "COSCO Shipping", logo: "/clients/cosco.svg" },
+    { name: "Arcelor Mittal Nippon Steel Pvt Ltd", logo: "/clients/amns.png" },
+    { name: "Posco Maharashtra Steel India Pvt Ltd", logo: "/clients/posco.svg" },
+    { name: "JSW Energy Ltd", logo: "/clients/jsw.svg" },
+    { name: "Exide Industries Ltd", logo: "/clients/exide.svg" },
     { name: "Sodexo", logo: "/clients/sodexo.svg" },
-    { name: "Tata", logo: "/clients/tata.svg" },
-    { name: "Gujarat Ports", logo: "/clients/gpcl.png" },
-    { name: "Simon India", logo: "" }, // No logo available, will default to styled text
+    { name: "L&T Defence", logo: "/clients/lnt.svg" },
+    { name: "Adani", logo: "/clients/adani.svg" },
+    { name: "Siemens", logo: "/clients/siemens.svg" },
+    { name: "Swan Defence", logo: "/clients/swan.svg" },
+    { name: "Tally Solution", logo: "/clients/tally.png" },
 ]
 
 export function ClientMarquee() {

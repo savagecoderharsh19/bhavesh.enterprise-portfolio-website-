@@ -11,7 +11,7 @@ export default function PublicLayout({
         <div className="relative min-h-screen">
             <Floating3DElements />
             <Navbar />
-            <main className="relative z-10">
+            <main className="relative">
                 {children}
             </main>
             <Footer />

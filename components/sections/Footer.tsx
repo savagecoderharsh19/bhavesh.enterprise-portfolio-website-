@@ -59,6 +59,8 @@ export function Footer() {
                         <ul className="space-y-3 text-[13px] text-gray-400 font-medium">
                             <li className="flex items-center gap-2"><span>Defence Industry</span></li>
                             <li className="flex items-center gap-2"><span>Ports & Shipping</span></li>
+                            <li className="flex items-center gap-2"><span>Steel Plants</span></li>
+                            <li className="flex items-center gap-2"><span>EV Components & Spokes</span></li>
                             <li className="flex items-center gap-2"><span>Oil & Gas Exploration</span></li>
                             <li className="flex items-center gap-2"><span>Automotive & Aerospace</span></li>
                             <li className="flex items-center gap-2"><span>Chemical & Pharma</span></li>

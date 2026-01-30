@@ -64,18 +64,31 @@ export function Footer() {
                     <div>
                         <h4 className="text-white font-black uppercase tracking-widest text-[11px] mb-8 border-l-2 border-[#D97706] pl-4">Direct Contact</h4>
                         <div className="space-y-6">
-                            <div className="flex items-start gap-4">
-                                <MapPin className="w-5 h-5 text-[#D97706] shrink-0 mt-1" />
-                                <span className="text-[13px] text-gray-400 leading-relaxed font-medium">
-                                    372, Narshi Natha St, Katha Bazar, Vadgadi, Masjid Bandar West, Mumbai - 400 009
+                            <a
+                                href="https://www.google.com/maps/dir/?api=1&destination=E+101+,+372,+Jyoti+Chambers+Narshinatha+Street+Masjid+Bunder+Mumbai+400009"
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="flex items-start gap-4 group/address"
+                            >
+                                <MapPin className="w-5 h-5 text-[#D97706] shrink-0 mt-1 transition-transform group-hover/address:scale-110" />
+                                <span className="text-[13px] text-gray-400 leading-relaxed font-medium group-hover/address:text-white transition-colors">
+                                    E 101 , 372, Jyoti Chambers Narshinatha Street Masjid Bunder Mumbai 400009
                                 </span>
-                            </div>
+                            </a>
                             <div className="space-y-3">
-                                <div className="flex items-center gap-4">
-                                    <Phone className="w-5 h-5 text-[#D97706] shrink-0" />
-                                    <a href="tel:+919833491238" className="text-[13px] text-gray-400 font-medium hover:text-white transition-colors">
-                                        +91 9833491238
-                                    </a>
+                                <div className="flex items-start gap-4">
+                                    <Phone className="w-5 h-5 text-[#D97706] shrink-0 mt-0.5" />
+                                    <div className="flex flex-col gap-1">
+                                        <a href="tel:02249608180" className="text-[13px] text-gray-400 font-medium hover:text-white transition-colors">
+                                            022 49608180 (Tel)
+                                        </a>
+                                        <a href="tel:9833491238" className="text-[13px] text-gray-400 font-medium hover:text-white transition-colors">
+                                            98334 91238
+                                        </a>
+                                        <a href="tel:9137611033" className="text-[13px] text-gray-400 font-medium hover:text-white transition-colors">
+                                            91376 11033
+                                        </a>
+                                    </div>
                                 </div>
                                 <div className="flex items-center gap-4">
                                     <Mail className="w-5 h-5 text-[#D97706] shrink-0" />

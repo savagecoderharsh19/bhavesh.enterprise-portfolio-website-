@@ -18,6 +18,14 @@ const projects = [
     { src: "/gallery/project-9.jpg", title: "Industrial Hardware" },
     { src: "/gallery/project-10.jpg", title: "Technical Instruments" },
     { src: "/gallery/project-11.jpg", title: "Finished Products" },
+    { src: "/gallery/project-12.jpg", title: "Advanced Tooling" },
+    { src: "/gallery/project-13.jpg", title: "Material Processing" },
+    { src: "/gallery/project-14.jpg", title: "Component Testing" },
+    { src: "/gallery/project-15.jpg", title: "Structural Integrity" },
+    { src: "/gallery/project-16.jpg", title: "Mechanical Systems" },
+    { src: "/gallery/project-17.jpg", title: "Industrial Solutions" },
+    { src: "/gallery/project-18.jpg", title: "Production Excellence" },
+    { src: "/gallery/project-19.jpg", title: "Specialized Parts" },
 ]
 
 export function ProjectGallery() {

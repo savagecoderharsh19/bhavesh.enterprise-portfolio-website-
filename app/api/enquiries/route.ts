@@ -19,7 +19,10 @@ export async function POST(req: Request) {
         }
 
         const body = await req.json()
+        console.log('[ENQUIRY_POST] Received body:', JSON.stringify(body, null, 2))
+
         const payload = enquirySchema.parse(body)
+        console.log('[ENQUIRY_POST] Validated payload:', JSON.stringify(payload, null, 2))
 
         // Generate a human-readable enquiry number
         const generateRef = () => {
@@ -28,6 +31,7 @@ export async function POST(req: Request) {
             return `BE-${date}-${random}`
         }
 
+        console.log('[ENQUIRY_POST] Creating enquiry...')
         const enquiry = await prisma.enquiry.create({
             data: {
                 enquiryNumber: generateRef(),
@@ -42,14 +46,16 @@ export async function POST(req: Request) {
                 status: 'NEW'
             }
         })
+        console.log('[ENQUIRY_POST] Created:', enquiry.enquiryNumber)
 
         return NextResponse.json({ success: true, ref: enquiry.enquiryNumber })
     } catch (error: any) {
-        console.error('[ENQUIRY_POST]', error)
+        console.error('[ENQUIRY_POST] Error:', error.message)
+        console.error('[ENQUIRY_POST] Stack:', error.stack)
         if (error.name === 'ZodError') {
             return NextResponse.json({ error: 'Validation failed', issues: error.issues }, { status: 400 })
         }
-        return NextResponse.json({ error: 'Internal server error' }, { status: 500 })
+        return NextResponse.json({ error: error.message || 'Internal server error' }, { status: 500 })
     }
 }
 

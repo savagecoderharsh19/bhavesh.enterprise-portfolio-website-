@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import Image from "next/image"
 import { ShieldCheck, Zap } from "lucide-react"
 import { motion } from "framer-motion"
 import { BrandMark } from "@/components/ui/BrandMark"
@@ -9,12 +10,16 @@ export function Hero() {
     return (
         <section id="home" className="relative w-full h-[700px] flex items-center justify-center overflow-hidden">
             {/* Background Image + Cinematic Dark Overlay */}
-            <div
-                className="absolute inset-0 z-0 bg-cover bg-center"
-                style={{
-                    backgroundImage: "url('/hero-bg.png')",
-                }}
-            >
+            <div className="absolute inset-0 z-0">
+                <Image
+                    src="/hero-bg.png"
+                    alt="Industrial Background"
+                    fill
+                    className="object-cover"
+                    priority
+                    quality={90}
+                    sizes="100vw"
+                />
                 {/* Multi-layered overlay for depth */}
                 <div className="absolute inset-0 bg-slate-950/70" />
                 <div className="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-slate-950/50" />

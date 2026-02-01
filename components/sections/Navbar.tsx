@@ -12,8 +12,15 @@ export function Navbar() {
     const [isScrolled, setIsScrolled] = useState(false)
 
     useEffect(() => {
+        let ticking = false;
         const handleScroll = () => {
-            setIsScrolled(window.scrollY > 20)
+            if (!ticking) {
+                window.requestAnimationFrame(() => {
+                    setIsScrolled(window.scrollY > 20)
+                    ticking = false;
+                });
+                ticking = true;
+            }
         }
         window.addEventListener("scroll", handleScroll)
         return () => window.removeEventListener("scroll", handleScroll)
@@ -39,7 +46,7 @@ export function Navbar() {
             <div className="container mx-auto px-2 md:px-6 max-w-[1000px]">
                 <div
                     className={cn(
-                        "flex items-center justify-between rounded-full px-3 py-2 md:px-6 md:py-3 transition-all duration-500 ease-in-out border backdrop-blur-xl backdrop-saturate-150",
+                        "flex items-center justify-between rounded-full px-3 py-2 md:px-6 md:py-3 transition-all duration-500 ease-in-out border backdrop-blur-md md:backdrop-blur-xl backdrop-saturate-150 overflow-x-auto no-scrollbar",
                         isScrolled
                             ? "bg-white/90 border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.12)] scale-100"
                             : "bg-white/70 border-white/40 shadow-[0_4px_20px_rgb(0,0,0,0.08)] scale-[1.02]"

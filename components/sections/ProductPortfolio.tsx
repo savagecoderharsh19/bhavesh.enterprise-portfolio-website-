@@ -207,10 +207,6 @@ const productCategories = [
 
 const PortfolioCard = ({ category, idx }: { category: typeof productCategories[0], idx: number }) => (
     <motion.div
-        initial={{ opacity: 0, scale: 0.9 }}
-        whileInView={{ opacity: 1, scale: 1 }}
-        viewport={{ once: true }}
-        transition={{ delay: idx * 0.1, duration: 0.5 }}
         whileHover={{
             y: -10,
             boxShadow: "0 25px 50px -12px rgba(12, 74, 110, 0.25)"

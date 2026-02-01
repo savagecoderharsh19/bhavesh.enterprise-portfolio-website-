@@ -49,11 +49,11 @@ export function Navbar() {
                     <div className="shrink-0 mr-2 md:mr-0">
                         {/* Mobile Icon */}
                         <Link href="/" className="md:hidden block">
-                            <BrandMark className="w-8 h-8" />
+                            <BrandMark className="w-14 h-14" />
                         </Link>
                         {/* Desktop Logo */}
                         <Link href="/" className="hidden md:block group relative z-10">
-                            <BrandLogo className="w-36 h-auto" />
+                            <BrandLogo className="w-40 h-auto" />
                         </Link>
                     </div>
 

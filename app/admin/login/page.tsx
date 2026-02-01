@@ -94,7 +94,7 @@ export default function AdminLoginPage() {
                                 onChange={(e) => setEmail(e.target.value)}
                                 required
                                 className="w-full px-5 py-4 bg-slate-50 dark:bg-[#0F172A] border-2 border-transparent focus:border-[#0C4A6E] dark:focus:border-[#D97706] rounded-2xl transition-all text-gray-900 dark:text-white placeholder:text-gray-400 font-bold text-sm outline-none"
-                                placeholder="admin@bhaveshenterprises.com"
+                                placeholder="Enter admin email"
                                 disabled={isLoading}
                             />
                         </div>

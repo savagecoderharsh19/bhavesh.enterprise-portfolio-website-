@@ -206,15 +206,15 @@ export default function AdminDashboard() {
     return (
         <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] flex flex-col font-sans transition-colors duration-300">
             {/* Header - Mobile Optimized */}
-            <header className="bg-[#0C4A6E] text-white sticky top-0 z-30 shadow-lg px-4 sm:px-6 py-3 sm:py-4">
+            <header className="bg-[#0C4A6E] text-white sticky top-0 z-30 shadow-lg px-4 sm:px-8 py-4 sm:py-5">
                 <div className="max-w-[1600px] mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-3 sm:gap-5">
-                        <BrandMark className="w-12 h-12 sm:w-16 sm:h-16 shrink-0" />
+                    <div className="flex items-center gap-4 sm:gap-6">
+                        <BrandMark className="w-14 h-14 sm:w-20 sm:h-20 shrink-0" />
                         <div className="min-w-0">
-                            <h1 className="text-base sm:text-xl font-black tracking-tighter uppercase leading-none truncate">
+                            <h1 className="text-lg sm:text-2xl font-black tracking-tighter uppercase leading-none truncate">
                                 BHAVESH ENTERPRISES
                             </h1>
-                            <p className="text-[8px] sm:text-[10px] font-black text-[#D97706] tracking-[0.2em] sm:tracking-[0.3em] uppercase mt-0.5 sm:mt-1">
+                            <p className="text-[9px] sm:text-xs font-black text-[#D97706] tracking-[0.2em] sm:tracking-[0.3em] uppercase mt-1 sm:mt-1.5">
                                 One-Stop Industrial Hub
                             </p>
                         </div>

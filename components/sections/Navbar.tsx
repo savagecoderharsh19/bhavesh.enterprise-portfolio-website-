@@ -47,10 +47,10 @@ export function Navbar() {
                 animate={{ y: 0, opacity: 1 }}
                 transition={{ duration: 0.8, ease: "circOut" }}
             >
-                <div className="container mx-auto px-6 max-w-[1000px]">
+                <div className="container mx-auto px-4 md:px-6 max-w-[1000px]">
                     <div
                         className={cn(
-                            "flex items-center justify-between rounded-full px-6 py-3 transition-all duration-500 ease-in-out border backdrop-blur-xl backdrop-saturate-150",
+                            "flex items-center justify-between rounded-full px-4 py-2 md:px-6 md:py-3 transition-all duration-500 ease-in-out border backdrop-blur-xl backdrop-saturate-150",
                             isScrolled
                                 ? "bg-white/90 border-white/60 shadow-[0_8px_30px_rgb(0,0,0,0.12)] scale-100"
                                 : "bg-white/70 border-white/40 shadow-[0_4px_20px_rgb(0,0,0,0.08)] scale-[1.02]"
@@ -58,7 +58,7 @@ export function Navbar() {
                     >
                         {/* Logo / Brand */}
                         <Link href="/" className="group relative z-10">
-                            <BrandLogo className="w-36 h-auto" />
+                            <BrandLogo className="w-28 md:w-36 h-auto" />
                         </Link>
 
                         {/* Desktop Navigation */}
@@ -86,7 +86,7 @@ export function Navbar() {
 
                         {/* Mobile Toggle */}
                         <button
-                            className="lg:hidden w-10 h-10 flex items-center justify-center rounded-full bg-slate-100 border border-slate-200 text-slate-800 hover:bg-slate-200 transition-colors"
+                            className="lg:hidden w-9 h-9 flex items-center justify-center rounded-full bg-slate-100 border border-slate-200 text-slate-800 hover:bg-slate-200 transition-colors"
                             onClick={() => setIsMobileMenuOpen(true)}
                         >
                             <Menu className="h-5 w-5" />

@@ -72,7 +72,7 @@ export function ProjectGallery() {
                 </div>
 
                 {/* Masonry-style Grid */}
-                <div className="columns-1 md:columns-2 lg:columns-3 gap-6 space-y-6">
+                <div className="columns-2 md:columns-3 lg:columns-4 gap-3 md:gap-6 space-y-3 md:space-y-6">
                     {projects.map((project, index) => (
                         <motion.div
                             key={index}

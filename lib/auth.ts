@@ -14,21 +14,27 @@ export const authOptions: AuthOptions = {
                 password: { label: 'Password', type: 'password' },
             },
             async authorize(credentials) {
-                if (!credentials?.email || !credentials?.password) return null
+                if (!credentials?.email || !credentials?.password) {
+                    return null
+                }
 
                 try {
                     const admin = await prisma.admin.findUnique({
                         where: { email: credentials.email },
                     })
 
-                    if (!admin) return null
+                    if (!admin) {
+                        return null
+                    }
 
                     const isPasswordValid = await bcrypt.compare(
                         credentials.password,
                         admin.password
                     )
 
-                    if (!isPasswordValid) return null
+                    if (!isPasswordValid) {
+                        return null
+                    }
 
                     return {
                         id: admin.id,

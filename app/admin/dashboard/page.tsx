@@ -208,10 +208,10 @@ export default function AdminDashboard() {
             {/* Header - Mobile Optimized */}
             <header className="bg-[#0C4A6E] text-white sticky top-0 z-30 shadow-lg px-4 sm:px-6 py-3 sm:py-4">
                 <div className="max-w-[1600px] mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-2 sm:gap-4">
-                        <BrandMark className="w-8 h-8 sm:w-10 sm:h-10 shrink-0" />
+                    <div className="flex items-center gap-3 sm:gap-4">
+                        <BrandMark className="w-10 h-10 sm:w-14 sm:h-14 shrink-0" />
                         <div className="min-w-0">
-                            <h1 className="text-sm sm:text-xl font-black tracking-tighter uppercase leading-none truncate">
+                            <h1 className="text-base sm:text-xl font-black tracking-tighter uppercase leading-none truncate">
                                 BHAVESH ENTERPRISES
                             </h1>
                             <p className="text-[8px] sm:text-[10px] font-black text-[#D97706] tracking-[0.2em] sm:tracking-[0.3em] uppercase mt-0.5 sm:mt-1">

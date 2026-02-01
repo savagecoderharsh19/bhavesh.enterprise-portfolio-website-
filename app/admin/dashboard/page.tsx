@@ -67,6 +67,7 @@ const STATUS_OPTIONS = [
 export default function AdminDashboard() {
     const [enquiries, setEnquiries] = useState<Enquiry[]>([])
     const [isLoading, setIsLoading] = useState(true)
+    const [isRefreshing, setIsRefreshing] = useState(false)
     const [searchTerm, setSearchTerm] = useState("")
     const [statusFilter, setStatusFilter] = useState<string>("ALL")
     const [updatingId, setUpdatingId] = useState<string | null>(null)
@@ -106,6 +107,27 @@ export default function AdminDashboard() {
             setError(error instanceof Error ? error.message : "Failed to fetch enquiries")
         } finally {
             setIsLoading(false)
+        }
+    }
+
+    const refreshEnquiries = async () => {
+        setIsRefreshing(true)
+        setError(null)
+        try {
+            const res = await fetch('/api/enquiries', { cache: 'no-store' })
+            if (!res.ok) {
+                const error = await res.json().catch(() => ({ error: res.statusText }))
+                throw new Error(error.error || `HTTP ${res.status}: ${res.statusText}`)
+            }
+            const data = await res.json()
+            if (Array.isArray(data)) {
+                setEnquiries(data)
+            }
+        } catch (error) {
+            console.error("Failed to refresh enquiries", error)
+            setError(error instanceof Error ? error.message : "Failed to refresh enquiries")
+        } finally {
+            setIsRefreshing(false)
         }
     }
 
@@ -286,8 +308,13 @@ export default function AdminDashboard() {
                     </div>
 
                     <div className="flex items-center gap-3 w-full md:w-auto">
-                        <Button variant="outline" className="h-11 border-gray-200 dark:border-white/10 dark:text-white dark:hover:bg-white/5 rounded-xl font-bold" onClick={fetchEnquiries}>
-                            <RefreshCw className={`h-4 w-4 mr-2 ${isLoading ? 'animate-spin' : ''}`} /> REFRESH
+                        <Button
+                            className="h-11 bg-[#0C4A6E] hover:bg-[#073652] text-white rounded-xl font-bold shadow-lg shadow-blue-900/20"
+                            onClick={refreshEnquiries}
+                            disabled={isRefreshing}
+                        >
+                            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            {isRefreshing ? 'REFRESHING...' : 'REFRESH DATA'}
                         </Button>
                         <Button
                             className="h-11 bg-[#D97706] hover:bg-[#B45309] text-white rounded-xl font-bold shadow-lg shadow-amber-900/10"

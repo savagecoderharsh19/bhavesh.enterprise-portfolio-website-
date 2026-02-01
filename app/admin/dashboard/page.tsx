@@ -205,22 +205,22 @@ export default function AdminDashboard() {
 
     return (
         <div className="min-h-screen bg-[#F8FAFC] dark:bg-[#0F172A] flex flex-col font-sans transition-colors duration-300">
-            {/* Header */}
-            <header className="bg-[#0C4A6E] text-white sticky top-0 z-30 shadow-lg px-6 py-4">
+            {/* Header - Mobile Optimized */}
+            <header className="bg-[#0C4A6E] text-white sticky top-0 z-30 shadow-lg px-4 sm:px-6 py-3 sm:py-4">
                 <div className="max-w-[1600px] mx-auto flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <BrandMark className="w-10 h-10" />
-                        <div>
-                            <h1 className="text-xl font-black tracking-tighter uppercase leading-none">
+                    <div className="flex items-center gap-2 sm:gap-4">
+                        <BrandMark className="w-8 h-8 sm:w-10 sm:h-10 shrink-0" />
+                        <div className="min-w-0">
+                            <h1 className="text-sm sm:text-xl font-black tracking-tighter uppercase leading-none truncate">
                                 BHAVESH ENTERPRISES
                             </h1>
-                            <p className="text-[10px] font-black text-[#D97706] tracking-[0.3em] uppercase mt-1">
+                            <p className="text-[8px] sm:text-[10px] font-black text-[#D97706] tracking-[0.2em] sm:tracking-[0.3em] uppercase mt-0.5 sm:mt-1">
                                 One-Stop Industrial Hub
                             </p>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-6">
+                    <div className="flex items-center gap-2 sm:gap-6">
                         {/* Theme Toggle */}
                         {mounted && (
                             <button
@@ -230,34 +230,35 @@ export default function AdminDashboard() {
                                 {theme === 'dark' ? <Sun className="h-4 w-4" /> : <Moon className="h-4 w-4" />}
                             </button>
                         )}
-                        <div className="hidden md:block text-right">
+                        <div className="hidden lg:block text-right">
                             <p className="text-sm font-medium">Administrator</p>
                             <p className="text-xs text-white/60">admin@bhaveshenterprises.com</p>
                         </div>
                         <Button
                             variant="ghost"
                             size="sm"
-                            className="text-white hover:bg-white/10"
+                            className="text-white hover:bg-white/10 px-2 sm:px-4"
                             onClick={() => signOut({ callbackUrl: '/admin/login' })}
                         >
-                            <LogOut className="h-4 w-4 mr-2" /> Logout
+                            <LogOut className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">Logout</span>
                         </Button>
                     </div>
                 </div>
             </header>
 
-            {/* Sub-header with Stats */}
-            <div className="bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/10 px-6 py-8 transition-colors duration-300">
+            {/* Sub-header with Stats - Mobile Optimized */}
+            <div className="bg-white dark:bg-[#1E293B] border-b border-gray-200 dark:border-white/10 px-4 sm:px-6 py-4 sm:py-8 transition-colors duration-300">
                 <div className="max-w-[1600px] mx-auto">
-                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-6">
+                    <div className="flex flex-col lg:flex-row lg:items-end justify-between gap-4 sm:gap-6">
                         <div>
-                            <h2 className="text-3xl font-black text-[#0C4A6E] dark:text-white uppercase tracking-tighter">Dashboard Overview</h2>
-                            <p className="text-gray-500 dark:text-gray-400 mt-1 uppercase text-xs font-bold tracking-widest">Manage and track customer requirements</p>
+                            <h2 className="text-xl sm:text-3xl font-black text-[#0C4A6E] dark:text-white uppercase tracking-tighter">Dashboard Overview</h2>
+                            <p className="text-gray-500 dark:text-gray-400 mt-1 uppercase text-[10px] sm:text-xs font-bold tracking-widest">Manage and track customer requirements</p>
                         </div>
 
-                        <div className="grid grid-cols-2 md:grid-cols-4 gap-4 w-full lg:w-auto">
-                            <StatCard label="Total Enquiries" value={stats.total} color="blue" icon={<FileText className="w-4 h-4" />} />
-                            <StatCard label="New Requests" value={stats.new} color="amber" icon={<AlertCircle className="w-4 h-4" />} />
+                        <div className="grid grid-cols-2 gap-2 sm:gap-4 w-full lg:w-auto">
+                            <StatCard label="Total" value={stats.total} color="blue" icon={<FileText className="w-3 h-3 sm:w-4 sm:h-4" />} />
+                            <StatCard label="New" value={stats.new} color="amber" icon={<AlertCircle className="w-3 h-3 sm:w-4 sm:h-4" />} />
                             <StatCard label="In Progress" value={stats.inProgress} color="indigo" icon={<Clock className="w-4 h-4" />} />
                             <StatCard label="Completed" value={stats.completed} color="green" icon={<CheckCircle2 className="w-4 h-4" />} />
                         </div>
@@ -266,12 +267,12 @@ export default function AdminDashboard() {
             </div>
 
             {/* Main Content */}
-            <main className="flex-1 max-w-[1600px] w-full mx-auto px-6 py-8">
+            <main className="flex-1 max-w-[1600px] w-full mx-auto px-4 sm:px-6 py-4 sm:py-8">
                 {/* Error Banner */}
                 {error && (
-                    <div className="mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-xl p-4 flex items-center gap-3">
+                    <div className="mb-4 sm:mb-6 bg-red-50 dark:bg-red-900/20 border border-red-200 dark:border-red-800/50 rounded-xl p-3 sm:p-4 flex items-center gap-3">
                         <AlertCircle className="h-5 w-5 text-red-500 shrink-0" />
-                        <p className="flex-1 text-red-700 dark:text-red-300 text-sm font-medium">{error}</p>
+                        <p className="flex-1 text-red-700 dark:text-red-300 text-xs sm:text-sm font-medium">{error}</p>
                         <button
                             onClick={() => setError(null)}
                             className="text-red-400 hover:text-red-600 dark:hover:text-red-200"
@@ -280,57 +281,148 @@ export default function AdminDashboard() {
                         </button>
                     </div>
                 )}
-                {/* Filters Row */}
-                <div className="mb-6 flex flex-col md:flex-row gap-4 items-center justify-between">
-                    <div className="flex items-center gap-3 w-full md:w-auto">
-                        <div className="relative flex-1 md:w-80">
+                {/* Filters Row - Mobile Optimized */}
+                <div className="mb-4 sm:mb-6 flex flex-col gap-3 sm:gap-4">
+                    {/* Search and Filter */}
+                    <div className="flex flex-col sm:flex-row gap-2 sm:gap-3 w-full">
+                        <div className="relative flex-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                             <Input
-                                placeholder="Search by name, ID or email..."
-                                className="pl-10 h-11 bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-[#073652] focus:border-[#073652] rounded-xl font-medium"
+                                placeholder="Search..."
+                                className="pl-10 h-10 sm:h-11 bg-white dark:bg-[#1E293B] border-gray-200 dark:border-white/10 text-gray-900 dark:text-white focus:ring-[#073652] focus:border-[#073652] rounded-xl font-medium text-sm"
                                 value={searchTerm}
                                 onChange={(e) => setSearchTerm(e.target.value)}
                             />
                         </div>
-                        <div className="relative">
+                        <div className="relative w-full sm:w-auto">
                             <Filter className="absolute left-3 top-1/2 -translate-y-1/2 h-4 w-4 text-gray-400" />
                             <select
-                                className="pl-10 pr-4 h-11 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl text-sm font-bold text-gray-900 dark:text-white focus:ring-[#073652] focus:border-[#073652] appearance-none"
+                                className="w-full sm:w-auto pl-10 pr-4 h-10 sm:h-11 bg-white dark:bg-[#1E293B] border border-gray-200 dark:border-white/10 rounded-xl text-xs sm:text-sm font-bold text-gray-900 dark:text-white focus:ring-[#073652] focus:border-[#073652] appearance-none"
                                 value={statusFilter}
                                 onChange={(e) => setStatusFilter(e.target.value)}
                             >
                                 <option value="ALL">ALL STATUS</option>
-                                <option value="NEW">NEW / UNCOMPLETE</option>
+                                <option value="NEW">NEW</option>
                                 <option value="IN_PROGRESS">IN PROGRESS</option>
                                 <option value="COMPLETED">COMPLETED</option>
                             </select>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-3 w-full md:w-auto">
+                    {/* Action Buttons - Stack on mobile */}
+                    <div className="grid grid-cols-2 sm:flex sm:flex-row gap-2 sm:gap-3 w-full sm:w-auto sm:justify-end">
                         <Button
-                            className="h-11 bg-[#0C4A6E] hover:bg-[#073652] text-white rounded-xl font-bold shadow-lg shadow-blue-900/20"
+                            className="h-10 sm:h-11 bg-[#0C4A6E] hover:bg-[#073652] text-white rounded-xl font-bold shadow-lg shadow-blue-900/20 text-xs sm:text-sm px-3 sm:px-4"
                             onClick={refreshEnquiries}
                             disabled={isRefreshing}
                         >
-                            <RefreshCw className={`h-4 w-4 mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
-                            {isRefreshing ? 'REFRESHING...' : 'REFRESH DATA'}
+                            <RefreshCw className={`h-4 w-4 sm:mr-2 ${isRefreshing ? 'animate-spin' : ''}`} />
+                            <span className="hidden sm:inline">{isRefreshing ? 'REFRESHING...' : 'REFRESH DATA'}</span>
+                            <span className="sm:hidden ml-1">REFRESH</span>
                         </Button>
                         <Button
-                            className="h-11 bg-[#D97706] hover:bg-[#B45309] text-white rounded-xl font-bold shadow-lg shadow-amber-900/10"
+                            className="h-10 sm:h-11 bg-[#D97706] hover:bg-[#B45309] text-white rounded-xl font-bold shadow-lg shadow-amber-900/10 text-xs sm:text-sm px-3 sm:px-4"
                             onClick={async () => {
                                 const { copyToClipboard } = await import('@/lib/exportToExcel');
                                 copyToClipboard(filteredEnquiries);
                             }}
                             disabled={filteredEnquiries.length === 0}
                         >
-                            <FileSpreadsheet className="h-4 w-4 mr-2" /> EXPORT TO CLIPBOARD
+                            <FileSpreadsheet className="h-4 w-4 sm:mr-2" />
+                            <span className="hidden sm:inline">EXPORT TO CLIPBOARD</span>
+                            <span className="sm:hidden ml-1">EXPORT</span>
                         </Button>
                     </div>
                 </div>
 
-                {/* Table Container */}
-                <div className="bg-white dark:bg-[#1E293B] rounded-2xl shadow-xl border border-gray-100 dark:border-white/10 overflow-hidden transition-colors duration-300">
+                {/* Mobile Card View - Shows on small screens */}
+                <div className="block md:hidden space-y-3">
+                    {isLoading ? (
+                        <div className="flex flex-col items-center justify-center py-12 bg-white dark:bg-[#1E293B] rounded-xl">
+                            <RefreshCw className="h-8 w-8 animate-spin text-[#0C4A6E] mb-3" />
+                            <p className="font-bold uppercase tracking-widest text-xs text-gray-500">Loading...</p>
+                        </div>
+                    ) : filteredEnquiries.length === 0 ? (
+                        <div className="flex flex-col items-center justify-center py-12 bg-white dark:bg-[#1E293B] rounded-xl">
+                            <AlertCircle className="h-8 w-8 text-gray-300 dark:text-gray-600 mb-3" />
+                            <p className="font-bold uppercase tracking-widest text-xs text-gray-400">No enquiries found</p>
+                        </div>
+                    ) : (
+                        filteredEnquiries.map((enquiry) => (
+                            <div key={enquiry.id} className="bg-white dark:bg-[#1E293B] rounded-xl p-4 border border-gray-100 dark:border-white/10 shadow-sm">
+                                {/* Header Row */}
+                                <div className="flex items-start justify-between mb-3">
+                                    <div>
+                                        <span className="font-mono text-[10px] font-black text-[#0C4A6E] dark:text-secondary block">
+                                            {enquiry.enquiryNumber || enquiry.id.slice(0, 8)}
+                                        </span>
+                                        <span className="text-[10px] text-gray-400">
+                                            {new Date(enquiry.createdAt).toLocaleDateString('en-IN', { day: '2-digit', month: 'short', year: 'numeric' })}
+                                        </span>
+                                    </div>
+                                    <StatusBadge status={enquiry.status} />
+                                </div>
+
+                                {/* Customer Info */}
+                                <div className="mb-3">
+                                    <div className="font-black text-gray-900 dark:text-white uppercase text-sm">{enquiry.name}</div>
+                                    <div className="text-gray-500 dark:text-gray-400 text-xs">{enquiry.phone}</div>
+                                    {enquiry.email && <div className="text-[#0C4A6E] dark:text-secondary text-xs">{enquiry.email}</div>}
+                                </div>
+
+                                {/* Requirement */}
+                                <div className="mb-3">
+                                    <div className="text-[9px] font-black text-[#D97706] uppercase tracking-wider mb-1">{enquiry.requirementType || "General"}</div>
+                                    <p className="text-xs text-gray-600 dark:text-gray-300 line-clamp-2">{enquiry.description}</p>
+                                    {enquiry.quantity && (
+                                        <span className="text-[10px] text-gray-500 mt-1 block">Qty: {enquiry.quantity}</span>
+                                    )}
+                                </div>
+
+                                {/* Files */}
+                                {enquiry.fileUrls.length > 0 && (
+                                    <div className="flex flex-wrap gap-1 mb-3">
+                                        {enquiry.fileUrls.map((url, i) => (
+                                            <a
+                                                key={i}
+                                                href={url}
+                                                target="_blank"
+                                                rel="noopener noreferrer"
+                                                className="inline-flex items-center px-2 py-1 bg-gray-100 dark:bg-white/10 rounded text-[9px] font-bold text-gray-600 dark:text-gray-400"
+                                            >
+                                                <Download className="h-3 w-3 mr-1" /> File {i + 1}
+                                            </a>
+                                        ))}
+                                    </div>
+                                )}
+
+                                {/* Actions */}
+                                <div className="flex items-center gap-2 pt-3 border-t border-gray-100 dark:border-white/10">
+                                    <select
+                                        disabled={updatingId === enquiry.id}
+                                        className="flex-1 text-[10px] font-bold border border-gray-200 dark:border-white/10 rounded-lg px-3 py-2 bg-white dark:bg-[#0F172A] text-gray-900 dark:text-white"
+                                        value={enquiry.status}
+                                        onChange={(e) => updateStatus(enquiry.id, e.target.value)}
+                                    >
+                                        {STATUS_OPTIONS.map(opt => (
+                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                        ))}
+                                    </select>
+                                    <button
+                                        disabled={updatingId === enquiry.id}
+                                        onClick={() => initiateDelete(enquiry.id, enquiry.name)}
+                                        className="p-2 text-red-500 hover:bg-red-50 dark:hover:bg-red-900/20 rounded-lg"
+                                    >
+                                        <Trash2 className="h-4 w-4" />
+                                    </button>
+                                </div>
+                            </div>
+                        ))
+                    )}
+                </div>
+
+                {/* Desktop Table Container - Hidden on mobile */}
+                <div className="hidden md:block bg-white dark:bg-[#1E293B] rounded-2xl shadow-xl border border-gray-100 dark:border-white/10 overflow-hidden transition-colors duration-300">
                     <div className="overflow-x-auto">
                         <Table>
                             <TableHeader className="bg-gray-50 dark:bg-black/20">
@@ -526,14 +618,14 @@ function StatCard({ label, value, color, icon }: { label: string, value: number,
     }
 
     return (
-        <div className="bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/10 rounded-2xl p-6 shadow-xl transition-all duration-300 hover:translate-y-[-4px] cursor-default group">
-            <div className="flex items-center gap-4 mb-4">
-                <div className={`p-3 rounded-2xl border ${colors[color]} group-hover:scale-110 transition-transform duration-500`}>
+        <div className="bg-white dark:bg-[#1E293B] border border-gray-100 dark:border-white/10 rounded-xl sm:rounded-2xl p-3 sm:p-6 shadow-xl transition-all duration-300 hover:translate-y-[-4px] cursor-default group">
+            <div className="flex items-center gap-2 sm:gap-4 mb-2 sm:mb-4">
+                <div className={`p-2 sm:p-3 rounded-xl sm:rounded-2xl border ${colors[color]} group-hover:scale-110 transition-transform duration-500`}>
                     {icon}
                 </div>
-                <span className="text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-widest">{label}</span>
+                <span className="text-[8px] sm:text-[10px] font-black text-gray-400 dark:text-gray-500 uppercase tracking-wider sm:tracking-widest">{label}</span>
             </div>
-            <div className="text-3xl font-black text-gray-900 dark:text-white tracking-tighter">{value}</div>
+            <div className="text-xl sm:text-3xl font-black text-gray-900 dark:text-white tracking-tighter">{value}</div>
         </div>
     )
 }

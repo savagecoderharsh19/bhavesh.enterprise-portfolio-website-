@@ -27,7 +27,17 @@ const nextConfig: NextConfig = {
             key: "Referrer-Policy",
             value: "strict-origin-when-cross-origin",
           },
-          // Permissions Policy (formerly Feature Policy)
+          // HSTS (SSL Enhancement) - 1 year duration
+          {
+            key: "Strict-Transport-Security",
+            value: "max-age=31536000; includeSubDomains; preload",
+          },
+          // Disable DNS prefetching to improve privacy
+          {
+            key: "X-DNS-Prefetch-Control",
+            value: "off",
+          },
+          // Permissions Policy
           {
             key: "Permissions-Policy",
             value: "camera=(), microphone=(), geolocation=()",
